@@ -3,7 +3,6 @@ import CountUp from "react-countup";
 import { motion } from "framer-motion";
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
 
-// Import charts
 import MyLineChart from "../components/Charts/LineChart";
 import MyBarChart from "../components/Charts/BarChart";
 import MyPieChart from "../components/Charts/PieChart";
@@ -18,7 +17,7 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
       <main className="flex-1 px-10 py-3 space-y-10 bg-gray-50">
-        {/* Overview Section */}
+        {/* Header */}
         <section>
           <div className="flex justify-between items-center mb-10">
             <div>
@@ -36,7 +35,7 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Metric Cards */}
+          {/* Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card
               key={`visitors-${refreshKey}`}
@@ -65,7 +64,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Charts Section */}
+        {/*  Charts Section */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Line Chart */}
           <motion.div
@@ -79,9 +78,10 @@ export default function Dashboard() {
             }}
           >
             <h3 className="text-lg font-semibold mb-4 text-white">Visitor Growth</h3>
-            <MyLineChart />
+            <MyLineChart key={refreshKey} refreshKey={refreshKey} />
           </motion.div>
 
+          {/* Right Column */}
           <div className="space-y-6">
             {/* Bar Chart */}
             <motion.div
@@ -95,7 +95,7 @@ export default function Dashboard() {
               }}
             >
               <h3 className="text-lg font-semibold mb-4 text-white">Revenue Overview</h3>
-              <MyBarChart />
+              <MyBarChart key={refreshKey} refreshKey={refreshKey} />
             </motion.div>
 
             {/* Pie Chart */}
@@ -110,7 +110,7 @@ export default function Dashboard() {
               }}
             >
               <h3 className="text-lg font-semibold mb-4 text-white">Tourism Categories</h3>
-              <MyPieChart />
+              <MyPieChart key={refreshKey} refreshKey={refreshKey} />
             </motion.div>
           </div>
         </section>
@@ -119,10 +119,9 @@ export default function Dashboard() {
   );
 }
 
-// ✅ Card Component
+// Card Component
 function Card({ title, value, icon }) {
   const numericValue = parseInt(value.replace(/[^0-9]/g, ""));
-
   return (
     <motion.div
       className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300"

@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-const data = [
+const initialData = [
   { date: "Jan", value: 120 },
   { date: "Feb", value: 200 },
   { date: "Mar", value: 180 },
@@ -16,15 +17,27 @@ const data = [
 ];
 
 export default function MyLineChart() {
+  const [data, setData] = useState(initialData);
+
+  const refreshData = () => {
+    const newData = initialData.map(item => ({
+      ...item,
+      value: Math.floor(Math.random() * 600) + 100,
+    }));
+    setData(newData);
+  };
+
   return (
-    <ResponsiveContainer width="100%" height={500}>
-      <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-        <XAxis dataKey="date" stroke="#94a3b8" />
-        <YAxis stroke="#94a3b8" domain={[0, "dataMax + 50"]} />
-        <Tooltip />
-        <Line type="monotone" dataKey="value" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 3 }} />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="relative">
+      <ResponsiveContainer width="100%" height={500}>
+        <LineChart data={data} margin={{ top: 40, right: 30, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+          <XAxis dataKey="date" stroke="#94a3b8" />
+          <YAxis stroke="#94a3b8" domain={[0, "dataMax + 50"]} />
+          <Tooltip />
+          <Line type="monotone" dataKey="value" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 3 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
