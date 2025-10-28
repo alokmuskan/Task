@@ -1,57 +1,148 @@
-import Card from "../components/Card";
-import LineChart from "../components/Charts/LineChart";
-import BarChart from "../components/Charts/BarChart";
-import PieChart from "../components/Charts/PieChart";
-import { Users, MapPin, BarChart3, Globe2 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+} from "recharts";
+
+import { Users, MapPin, BarChart2, Globe } from "lucide-react";
 
 export default function Dashboard() {
   return (
-    <div className="space-y-8">
-      {/* Header row */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Overview</h2>
-          <p className="text-sm text-gray-500">Key metrics and recent trends</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button className="px-3 py-2 bg-sky-600 text-white rounded-md text-sm">Export</button>
-          <button className="px-3 py-2 border rounded-md text-sm">Refresh</button>
-        </div>
-      </div>
+    <div className="flex min-h-screen bg-gray-50 text-gray-800">
+      {/* Main content */}
+      <main className="flex-1 p-8 space-y-8">
+        {/* Overview */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-1">Overview</h2>
+          <p className="text-gray-500 mb-6">Key metrics and recent trends</p>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title="Total Visitors" value="24,320" right={<Users size={28} className="text-sky-500" />} />
-        <Card title="Top Destination" value="Bali" right={<MapPin size={28} className="text-sky-500" />} />
-        <Card title="Revenue" value="$52,430" right={<BarChart3 size={28} className="text-sky-500" />} />
-        <Card title="Active Regions" value="18" right={<Globe2 size={28} className="text-sky-500" />} />
-      </div>
-
-      {/* Charts area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-xl shadow p-4">
-          <h3 className="font-semibold text-lg mb-4">Visitor Growth</h3>
-          <div className="h-64">
-            <LineChart />
+          {/* Cards grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card
+              title="Total Visitors"
+              value="24,320"
+              icon={<Users className="text-sky-500" />}
+            />
+            <Card
+              title="Top Destination"
+              value="Bali"
+              icon={<MapPin className="text-sky-500" />}
+            />
+            <Card
+              title="Revenue"
+              value="$52,430"
+              icon={<BarChart2 className="text-sky-500" />}
+            />
+            <Card
+              title="Active Regions"
+              value="18"
+              icon={<Globe className="text-sky-500" />}
+            />
           </div>
-        </div>
+        </section>
 
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow p-4">
-            <h3 className="font-semibold mb-3">Revenue Overview</h3>
-            <div className="h-40">
-              <BarChart />
+        {/* Charts section */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold mb-4">Visitor Growth</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart
+                data={[
+                  { name: "Jan", value: 120 },
+                  { name: "Feb", value: 200 },
+                  { name: "Mar", value: 180 },
+                  { name: "Apr", value: 260 },
+                  { name: "May", value: 310 },
+                ]}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#0ea5e9"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold mb-4">Revenue Overview</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart
+                  data={[
+                    { name: "Beach", value: 400 },
+                    { name: "Mountain", value: 300 },
+                    { name: "City", value: 200 },
+                  ]}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    fill="#0ea5e9"
+                    radius={[8, 8, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold mb-4">
+                Tourism Categories
+              </h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: "Adventure", value: 30 },
+                      { name: "Luxury", value: 20 },
+                      { name: "Culture", value: 25 },
+                      { name: "Nature", value: 25 },
+                    ]}
+                    dataKey="value"
+                    outerRadius={70}
+                  >
+                    <Cell fill="#0ea5e9" />
+                    <Cell fill="#38bdf8" />
+                    <Cell fill="#7dd3fc" />
+                    <Cell fill="#bae6fd" />
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
+        </section>
+      </main>
+    </div>
+  );
+}
 
-          <div className="bg-white rounded-xl shadow p-4">
-            <h3 className="font-semibold mb-3">Tourism Categories</h3>
-            <div className="h-40">
-              <PieChart />
-            </div>
-          </div>
-        </div>
+// Card component
+function Card({ title, value, icon }) {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-md transition">
+      <div>
+        <p className="text-sm text-gray-500 mb-1">{title}</p>
+        <h4 className="text-2xl font-semibold">{value}</h4>
       </div>
+      {icon}
     </div>
   );
 }

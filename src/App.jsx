@@ -6,7 +6,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar */}
-      <Sidebar />
+        <Sidebar />
 
       {/* Main area */}
       <div className="flex-1 flex flex-col">

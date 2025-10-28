@@ -1,35 +1,30 @@
-import { Home, BarChart3, Globe2, Settings } from "lucide-react";
+import { Users, BarChart2, MapPin, Globe } from "lucide-react";
 
 export default function Sidebar() {
-  const nav = [
-    { label: "Dashboard", icon: <Home size={18} /> },
-    { label: "Analytics", icon: <BarChart3 size={18} /> },
-    { label: "Destinations", icon: <Globe2 size={18} /> },
-    { label: "Settings", icon: <Settings size={18} /> },
-  ];
-
   return (
-    <aside className="w-64 min-h-screen bg-white border-r shadow-sm hidden md:flex flex-col p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-sky-600">TourismDash</h1>
-        <p className="text-xs text-gray-400 mt-1">Analytics & insights</p>
+    <aside className="w-64 bg-white shadow-md p-6 flex flex-col justify-between">
+      <div>
+        <h1 className="text-2xl font-bold text-sky-600 mb-1">TourismDash</h1>
+        <p className="text-sm text-gray-500 mb-8">Analytics & insights</p>
+
+        <nav className="space-y-2">
+          <button className="flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">
+            <Users size={18} /> Dashboard
+          </button>
+          <button className="flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">
+            <BarChart2 size={18} /> Analytics
+          </button>
+          <button className="flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">
+            <MapPin size={18} /> Destinations
+          </button>
+          <button className="flex items-center gap-3 w-full text-left p-3 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">
+            <Globe size={18} /> Settings
+          </button>
+        </nav>
       </div>
 
-      <nav className="flex-1 space-y-2">
-        {nav.map((item) => (
-          <button
-            key={item.label}
-            className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-sky-50 rounded-md transition"
-            aria-label={item.label}
-          >
-            <span className="text-sky-500">{item.icon}</span>
-            <span className="text-sm font-medium">{item.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      <div className="mt-auto text-xs text-gray-400">
-        © {new Date().getFullYear()} Tourism Dashboard
+      <div className="text-sm text-gray-400 text-center">
+        © 2025 TourismDash
       </div>
     </aside>
   );
