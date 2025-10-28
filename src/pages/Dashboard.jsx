@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
@@ -20,7 +21,7 @@ import {
 import { Users, MapPin, BarChart2, Globe } from "lucide-react";
 
 export default function Dashboard() {
-   const [sidebarOpen, setSidebarOpen] = useState(true);
+   
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
       {/* Main content */}
@@ -142,12 +143,20 @@ export default function Dashboard() {
 // Card component
 function Card({ title, value, icon }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+    <motion.div
+      className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer
+      hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+    >
       <div>
-        <p className="text-sm text-gray-500 mb-1">{title}</p>
-        <h4 className="text-2xl font-semibold">{value}</h4>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{title}</p>
+        <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">{value}</h4>
       </div>
       {icon}
-    </div>
+    </motion.div>
   );
 }
