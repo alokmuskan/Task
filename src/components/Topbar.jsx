@@ -1,8 +1,10 @@
+import { Menu } from "lucide-react";
+
 import { Search, Bell, User } from "lucide-react";
 
 export default function Topbar() {
   return (
-    <header className="flex items-center justify-between bg-white border-b px-6 py-4 shadow-sm">
+    <header className="flex items-center justify-between bg-white border-b px-6 py-4 sticky top-0 z-50 shadow-sm">
       {/* Search Bar */}
       <div className="flex items-center w-1/3 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-sky-400">
         <Search size={18} className="text-gray-500 mr-2" />

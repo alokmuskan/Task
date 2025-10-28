@@ -1,3 +1,7 @@
+import { useState } from "react";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+
 import {
   LineChart,
   Line,
@@ -16,17 +20,18 @@ import {
 import { Users, MapPin, BarChart2, Globe } from "lucide-react";
 
 export default function Dashboard() {
+   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-800">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
       {/* Main content */}
-      <main className="flex-1 p-8 space-y-8">
+      <main className="flex-1 px-10 py-3 space-y-10 bg-gray-50">
         {/* Overview */}
         <section>
           <h2 className="text-2xl font-semibold mb-1">Overview</h2>
-          <p className="text-gray-500 mb-6">Key metrics and recent trends</p>
+          <p className="text-gray-500 mb-10">Key metrics and recent trends</p>
 
           {/* Cards grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card
               title="Total Visitors"
               value="24,320"
@@ -52,7 +57,7 @@ export default function Dashboard() {
 
         {/* Charts section */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6">
+          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-8">
             <h3 className="text-lg font-semibold mb-4">Visitor Growth</h3>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart
@@ -79,7 +84,7 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="bg-white rounded-2xl shadow-sm p-8">
               <h3 className="text-lg font-semibold mb-4">Revenue Overview</h3>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart
@@ -137,7 +142,7 @@ export default function Dashboard() {
 // Card component
 function Card({ title, value, icon }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-md transition">
+    <div className="bg-white rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
       <div>
         <p className="text-sm text-gray-500 mb-1">{title}</p>
         <h4 className="text-2xl font-semibold">{value}</h4>
