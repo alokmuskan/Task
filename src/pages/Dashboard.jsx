@@ -1,4 +1,5 @@
 import { useState } from "react";
+import CountUp from "react-countup";
 import { motion } from "framer-motion";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -142,6 +143,9 @@ export default function Dashboard() {
 
 // Card component
 function Card({ title, value, icon }) {
+  // Extract numeric value for count animation
+  const numericValue = parseInt(value.replace(/[^0-9]/g, "")); // handles $, commas, etc.
+
   return (
     <motion.div
       className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer
@@ -154,7 +158,17 @@ function Card({ title, value, icon }) {
     >
       <div>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{title}</p>
-        <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">{value}</h4>
+        <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+          {isNaN(numericValue) ? (
+            value
+          ) : (
+            <>
+              {value.includes("$") && "$"}
+              <CountUp end={numericValue} duration={2.5} separator="," />
+              {value.includes("k") && "k"}
+            </>
+          )}
+        </h4>
       </div>
       {icon}
     </motion.div>
