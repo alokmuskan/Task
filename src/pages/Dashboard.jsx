@@ -1,25 +1,12 @@
 import { useState } from "react";
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
-
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-} from "recharts";
-
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
+
+// Import charts
+import MyLineChart from "../components/Charts/LineChart";
+import MyBarChart from "../components/Charts/BarChart";
+import MyPieChart from "../components/Charts/PieChart";
 
 export default function Dashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -30,9 +17,8 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
-      {/* Main content */}
       <main className="flex-1 px-10 py-3 space-y-10 bg-gray-50">
-        {/* Overview */}
+        {/* Overview Section */}
         <section>
           <div className="flex justify-between items-center mb-10">
             <div>
@@ -40,7 +26,7 @@ export default function Dashboard() {
               <p className="text-gray-500">Key metrics and recent trends</p>
             </div>
 
-            {/* ✅ Refresh Button */}
+            {/* Refresh Button */}
             <button
               onClick={handleRefresh}
               className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 transition-all"
@@ -50,7 +36,7 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Cards grid */}
+          {/* Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card
               key={`visitors-${refreshKey}`}
@@ -79,145 +65,67 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Charts section */}
-        {/* Charts section */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Line Chart */}
+        {/* Charts Section */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Line Chart */}
+          <motion.div
+            className="lg:col-span-2 bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            whileHover={{
+              scale: 1.02,
+              boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+            }}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-white">Visitor Growth</h3>
+            <MyLineChart />
+          </motion.div>
+
+          <div className="space-y-6">
+            {/* Bar Chart */}
             <motion.div
-              className="lg:col-span-2 bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
+              className="bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
+              transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
               whileHover={{
                 scale: 1.02,
                 boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
               }}
             >
-              <h3 className="text-lg font-semibold mb-4 text-white">Visitor Growth</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={[
-                    { name: "Jan", value: 120 },
-                    { name: "Feb", value: 200 },
-                    { name: "Mar", value: 180 },
-                    { name: "Apr", value: 260 },
-                    { name: "May", value: 310 },
-                  ]}
-                >
-                  <CartesianGrid stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="name" stroke="#94a3b8" />
-                  <YAxis stroke="#94a3b8" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1e293b",
-                      border: "none",
-                      color: "#fff",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#0ea5e9"
-                    strokeWidth={3}
-                    dot={{ fill: "#38bdf8" }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <h3 className="text-lg font-semibold mb-4 text-white">Revenue Overview</h3>
+              <MyBarChart />
             </motion.div>
 
-            <div className="space-y-6">
-              {/* Bar Chart */}
-              <motion.div
-                className="bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
-                }}
-              >
-                <h3 className="text-lg font-semibold mb-4 text-white">Revenue Overview</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart
-                    data={[
-                      { name: "Beach", value: 400 },
-                      { name: "Mountain", value: 300 },
-                      { name: "City", value: 200 },
-                    ]}
-                  >
-                    <CartesianGrid stroke="rgba(255,255,255,0.1)" />
-                    <XAxis dataKey="name" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1e293b",
-                        border: "none",
-                        color: "#fff",
-                      }}
-                    />
-                    <Bar dataKey="value" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </motion.div>
-
-              {/* Pie Chart */}
-              <motion.div
-                className="bg-[#0f172a] rounded-2xl shadow-sm p-6 text-white"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
-                }}
-              >
-                <h3 className="text-lg font-semibold mb-4 text-white">
-                  Tourism Categories
-                </h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: "Adventure", value: 30 },
-                        { name: "Luxury", value: 20 },
-                        { name: "Culture", value: 25 },
-                        { name: "Nature", value: 25 },
-                      ]}
-                      dataKey="value"
-                      outerRadius={70}
-                    >
-                      <Cell fill="#0ea5e9" />
-                      <Cell fill="#38bdf8" />
-                      <Cell fill="#7dd3fc" />
-                      <Cell fill="#bae6fd" />
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1e293b",
-                        border: "none",
-                        color: "#fff",
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </motion.div>
-            </div>
-          </section>
-
+            {/* Pie Chart */}
+            <motion.div
+              className="bg-[#0f172a] rounded-2xl shadow-sm p-6 text-white"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+              }}
+            >
+              <h3 className="text-lg font-semibold mb-4 text-white">Tourism Categories</h3>
+              <MyPieChart />
+            </motion.div>
+          </div>
+        </section>
       </main>
     </div>
   );
 }
 
-// Card component
+// ✅ Card Component
 function Card({ title, value, icon }) {
   const numericValue = parseInt(value.replace(/[^0-9]/g, ""));
 
   return (
     <motion.div
-      className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer
-      hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
