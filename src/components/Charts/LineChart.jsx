@@ -17,7 +17,7 @@ const data = [
 
 export default function MyLineChart() {
   return (
-    <ResponsiveContainer width="100%" height={280}>
+    <ResponsiveContainer width="100%" height={500}>
       <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
         <XAxis dataKey="date" stroke="#94a3b8" />
