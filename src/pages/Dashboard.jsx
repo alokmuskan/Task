@@ -19,37 +19,59 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { Users, MapPin, BarChart2, Globe } from "lucide-react";
+import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
 
 export default function Dashboard() {
-   
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
       {/* Main content */}
       <main className="flex-1 px-10 py-3 space-y-10 bg-gray-50">
         {/* Overview */}
         <section>
-          <h2 className="text-2xl font-semibold mb-1">Overview</h2>
-          <p className="text-gray-500 mb-10">Key metrics and recent trends</p>
+          <div className="flex justify-between items-center mb-10">
+            <div>
+              <h2 className="text-2xl font-semibold mb-1">Overview</h2>
+              <p className="text-gray-500">Key metrics and recent trends</p>
+            </div>
+
+            {/* ✅ Refresh Button */}
+            <button
+              onClick={handleRefresh}
+              className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 transition-all"
+            >
+              <RefreshCw size={18} />
+              Refresh Stats
+            </button>
+          </div>
 
           {/* Cards grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card
+              key={`visitors-${refreshKey}`}
               title="Total Visitors"
               value="24,320"
               icon={<Users className="text-sky-500" />}
             />
             <Card
+              key={`destination-${refreshKey}`}
               title="Top Destination"
               value="Bali"
               icon={<MapPin className="text-sky-500" />}
             />
             <Card
+              key={`revenue-${refreshKey}`}
               title="Revenue"
               value="$52,430"
               icon={<BarChart2 className="text-sky-500" />}
             />
             <Card
+              key={`regions-${refreshKey}`}
               title="Active Regions"
               value="18"
               icon={<Globe className="text-sky-500" />}
@@ -100,11 +122,7 @@ export default function Dashboard() {
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
-                  <Bar
-                    dataKey="value"
-                    fill="#0ea5e9"
-                    radius={[8, 8, 0, 0]}
-                  />
+                  <Bar dataKey="value" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -143,8 +161,7 @@ export default function Dashboard() {
 
 // Card component
 function Card({ title, value, icon }) {
-  // Extract numeric value for count animation
-  const numericValue = parseInt(value.replace(/[^0-9]/g, "")); // handles $, commas, etc.
+  const numericValue = parseInt(value.replace(/[^0-9]/g, ""));
 
   return (
     <motion.div
@@ -164,7 +181,7 @@ function Card({ title, value, icon }) {
           ) : (
             <>
               {value.includes("$") && "$"}
-              <CountUp end={numericValue} duration={2.5} separator="," />
+              <CountUp key={numericValue} end={numericValue} duration={2.5} separator="," />
               {value.includes("k") && "k"}
             </>
           )}
