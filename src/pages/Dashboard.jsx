@@ -80,80 +80,131 @@ export default function Dashboard() {
         </section>
 
         {/* Charts section */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-8">
-            <h3 className="text-lg font-semibold mb-4">Visitor Growth</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart
-                data={[
-                  { name: "Jan", value: 120 },
-                  { name: "Feb", value: 200 },
-                  { name: "Mar", value: 180 },
-                  { name: "Apr", value: 260 },
-                  { name: "May", value: 310 },
-                ]}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#0ea5e9"
-                  strokeWidth={3}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm p-8">
-              <h3 className="text-lg font-semibold mb-4">Revenue Overview</h3>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart
+        {/* Charts section */}
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Line Chart */}
+            <motion.div
+              className="lg:col-span-2 bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+              }}
+            >
+              <h3 className="text-lg font-semibold mb-4 text-white">Visitor Growth</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
                   data={[
-                    { name: "Beach", value: 400 },
-                    { name: "Mountain", value: 300 },
-                    { name: "City", value: 200 },
+                    { name: "Jan", value: 120 },
+                    { name: "Feb", value: 200 },
+                    { name: "Mar", value: 180 },
+                    { name: "Apr", value: 260 },
+                    { name: "May", value: 310 },
                   ]}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm p-6">
-              <h3 className="text-lg font-semibold mb-4">
-                Tourism Categories
-              </h3>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: "Adventure", value: 30 },
-                      { name: "Luxury", value: 20 },
-                      { name: "Culture", value: 25 },
-                      { name: "Nature", value: 25 },
-                    ]}
+                  <CartesianGrid stroke="rgba(255,255,255,0.1)" />
+                  <XAxis dataKey="name" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#1e293b",
+                      border: "none",
+                      color: "#fff",
+                    }}
+                  />
+                  <Line
+                    type="monotone"
                     dataKey="value"
-                    outerRadius={70}
-                  >
-                    <Cell fill="#0ea5e9" />
-                    <Cell fill="#38bdf8" />
-                    <Cell fill="#7dd3fc" />
-                    <Cell fill="#bae6fd" />
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
+                    stroke="#0ea5e9"
+                    strokeWidth={3}
+                    dot={{ fill: "#38bdf8" }}
+                  />
+                </LineChart>
               </ResponsiveContainer>
+            </motion.div>
+
+            <div className="space-y-6">
+              {/* Bar Chart */}
+              <motion.div
+                className="bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+                }}
+              >
+                <h3 className="text-lg font-semibold mb-4 text-white">Revenue Overview</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart
+                    data={[
+                      { name: "Beach", value: 400 },
+                      { name: "Mountain", value: 300 },
+                      { name: "City", value: 200 },
+                    ]}
+                  >
+                    <CartesianGrid stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="name" stroke="#94a3b8" />
+                    <YAxis stroke="#94a3b8" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1e293b",
+                        border: "none",
+                        color: "#fff",
+                      }}
+                    />
+                    <Bar dataKey="value" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </motion.div>
+
+              {/* Pie Chart */}
+              <motion.div
+                className="bg-[#0f172a] rounded-2xl shadow-sm p-6 text-white"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+                }}
+              >
+                <h3 className="text-lg font-semibold mb-4 text-white">
+                  Tourism Categories
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: "Adventure", value: 30 },
+                        { name: "Luxury", value: 20 },
+                        { name: "Culture", value: 25 },
+                        { name: "Nature", value: 25 },
+                      ]}
+                      dataKey="value"
+                      outerRadius={70}
+                    >
+                      <Cell fill="#0ea5e9" />
+                      <Cell fill="#38bdf8" />
+                      <Cell fill="#7dd3fc" />
+                      <Cell fill="#bae6fd" />
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1e293b",
+                        border: "none",
+                        color: "#fff",
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </motion.div>
             </div>
-          </div>
-        </section>
+          </section>
+
       </main>
     </div>
   );
