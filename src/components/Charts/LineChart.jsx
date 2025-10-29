@@ -1,4 +1,4 @@
-// src/components/Charts/MyLineChart.jsx
+// src/components/Charts/LineChart.jsx
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export default function MyLineChart({ data }) {

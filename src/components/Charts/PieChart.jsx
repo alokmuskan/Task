@@ -1,4 +1,4 @@
-// src/components/Charts/MyPieChart.jsx
+// src/components/Charts/PieChart.jsx
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const COLORS = ["#06b6d4", "#0ea5e9", "#38bdf8", "#67e8f9"];

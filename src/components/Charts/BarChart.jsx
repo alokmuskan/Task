@@ -1,4 +1,4 @@
-// src/components/Charts/MyBarChart.jsx
+// src/components/Charts/BarChart.jsx
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function MyBarChart({ data }) {
