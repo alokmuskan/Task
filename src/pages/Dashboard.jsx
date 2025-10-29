@@ -21,10 +21,11 @@ export default function Dashboard() {
     setTimeout(() => setIsRefreshing(false), 2000);
   };
 
-
   return (
+    // 🔹 Slight gradient background for subtle depth
+    // 👉 To make it fully white, replace the class below with: "flex min-h-screen bg-white text-gray-800"
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
-      <main className="flex-1 px-10 py-3 space-y-10 bg-gray-50">
+      <main className="flex-1 px-10 py-3 space-y-10">
         {/* Header */}
         <section>
           <div className="flex justify-between items-center mb-10">
@@ -77,16 +78,16 @@ export default function Dashboard() {
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Line Chart */}
           <motion.div
-            className="lg:col-span-2 bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
+            className="lg:col-span-2 bg-white rounded-2xl shadow-md p-8"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             whileHover={{
               scale: 1.02,
-              boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+              boxShadow: "0px 8px 25px rgba(14,165,233,0.15)",
             }}
           >
-            <h3 className="text-lg font-semibold mb-4 text-white">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
               Visitor Growth
             </h3>
             <MyLineChart data={chartData.line} />
@@ -96,16 +97,16 @@ export default function Dashboard() {
           <div className="space-y-6">
             {/* Bar Chart */}
             <motion.div
-              className="bg-[#0f172a] rounded-2xl shadow-sm p-8 text-white"
+              className="bg-white rounded-2xl shadow-md p-8"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
               whileHover={{
                 scale: 1.02,
-                boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+                boxShadow: "0px 8px 25px rgba(14,165,233,0.15)",
               }}
             >
-              <h3 className="text-lg font-semibold mb-4 text-white">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
                 Revenue Overview
               </h3>
               <MyBarChart data={chartData.bar} />
@@ -113,16 +114,16 @@ export default function Dashboard() {
 
             {/* Pie Chart */}
             <motion.div
-              className="bg-[#0f172a] rounded-2xl shadow-sm p-6 text-white"
+              className="bg-white rounded-2xl shadow-md p-6"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
               whileHover={{
                 scale: 1.02,
-                boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+                boxShadow: "0px 8px 25px rgba(14,165,233,0.15)",
               }}
             >
-              <h3 className="text-lg font-semibold mb-4 text-white">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
                 Tourism Categories
               </h3>
               <MyPieChart data={chartData.pie} />
@@ -137,7 +138,7 @@ export default function Dashboard() {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
           whileHover={{
             scale: 1.02,
-            boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+            boxShadow: "0px 8px 25px rgba(14,165,233,0.15)",
           }}
         >
           <TouristStats />
@@ -154,7 +155,7 @@ function Card({ title, value, icon }) {
 
   return (
     <motion.div
-      className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className="bg-white rounded-2xl shadow-md p-6 flex items-center justify-between cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -162,10 +163,8 @@ function Card({ title, value, icon }) {
       whileTap={{ scale: 0.97 }}
     >
       <div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-          {title}
-        </p>
-        <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+        <p className="text-sm text-gray-500 mb-1">{title}</p>
+        <h4 className="text-2xl font-semibold text-gray-800">
           {isNaN(numericValue) ? (
             value
           ) : (
