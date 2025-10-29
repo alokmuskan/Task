@@ -168,7 +168,16 @@ export default function TouristStats() {
             <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis dataKey="region" stroke="#374151" />
-              <YAxis stroke="#374151" />
+              <YAxis
+                stroke="#475569"
+                tickFormatter={(value) =>
+                  value >= 1000000
+                    ? `${(value / 1000000).toFixed(1)}M`
+                    : value >= 1000
+                    ? `${(value / 1000).toFixed(0)}K`
+                    : value
+                }
+              />
               <Tooltip />
               <Legend />
               <Bar dataKey="visitors" fill="#0ea5e9" name="Visitors" radius={[6, 6, 0, 0]} />
