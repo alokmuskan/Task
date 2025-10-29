@@ -6,7 +6,7 @@ export const useDashboardStore = create((set) => ({
 
   statsData: {
     totalVisitors: 24320,
-    topDestination: "Bali",
+    topDestination: "Bihar",
     revenue: 52430,
     activeRegions: 18,
   },
