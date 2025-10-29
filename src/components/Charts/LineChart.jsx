@@ -1,32 +1,7 @@
-import { useState } from "react";
+// src/components/Charts/MyLineChart.jsx
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-const initialData = [
-  { date: "Jan", value: 120 },
-  { date: "Feb", value: 200 },
-  { date: "Mar", value: 180 },
-  { date: "Apr", value: 260 },
-  { date: "May", value: 300 },
-  { date: "Jun", value: 350 },
-  { date: "Jul", value: 420 },
-  { date: "Aug", value: 460 },
-  { date: "Sep", value: 500 },
-  { date: "Oct", value: 550 },
-  { date: "Nov", value: 600 },
-  { date: "Dec", value: 650 },
-];
-
-export default function MyLineChart() {
-  const [data, setData] = useState(initialData);
-
-  const refreshData = () => {
-    const newData = initialData.map(item => ({
-      ...item,
-      value: Math.floor(Math.random() * 600) + 100,
-    }));
-    setData(newData);
-  };
-
+export default function MyLineChart({ data }) {
   return (
     <div className="relative">
       <ResponsiveContainer width="100%" height={500}>
@@ -35,7 +10,15 @@ export default function MyLineChart() {
           <XAxis dataKey="date" stroke="#94a3b8" />
           <YAxis stroke="#94a3b8" domain={[0, "dataMax + 50"]} />
           <Tooltip />
-          <Line type="monotone" dataKey="value" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 3 }} />
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="#0ea5e9"
+            strokeWidth={3}
+            dot={{ r: 3 }}
+            isAnimationActive={true}
+            animationDuration={700}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
