@@ -29,12 +29,12 @@ export default function TouristStats() {
 
   // ⏱️ (Commented Out) Automatic refresh every 5 seconds
   
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refreshData();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     refreshData();
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
   
 
   return (
@@ -56,7 +56,7 @@ export default function TouristStats() {
         </div>
 
         {/* 🔁 Refresh Button */}
-        {/* <button
+        <button
           onClick={refreshData}
           disabled={isRefreshing}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
@@ -67,7 +67,7 @@ export default function TouristStats() {
             className={isRefreshing ? "animate-spin" : ""}
           />
           {isRefreshing ? "Refreshing..." : "Refresh Stats"}
-        </button> */}
+        </button>
       </div>
 
       {/* Chart */}
