@@ -1,26 +1,7 @@
-import { useState } from "react";
+// src/components/Charts/MyBarChart.jsx
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { RefreshCw } from "lucide-react";
 
-const initialData = [
-  { month: "Jan", revenue: 4000 },
-  { month: "Feb", revenue: 3000 },
-  { month: "Mar", revenue: 5000 },
-  { month: "Apr", revenue: 4500 },
-  { month: "May", revenue: 6000 },
-];
-
-export default function MyBarChart() {
-  const [data, setData] = useState(initialData);
-
-  const refreshData = () => {
-    const newData = initialData.map(item => ({
-      ...item,
-      revenue: Math.floor(Math.random() * 7000) + 2000,
-    }));
-    setData(newData);
-  };
-
+export default function MyBarChart({ data }) {
   return (
     <div className="relative">
       <ResponsiveContainer width="100%" height={280}>
@@ -29,7 +10,13 @@ export default function MyBarChart() {
           <XAxis dataKey="month" stroke="#94a3b8" />
           <YAxis stroke="#94a3b8" />
           <Tooltip />
-          <Bar dataKey="revenue" fill="#06b6d4" radius={[8, 8, 0, 0]} />
+          <Bar
+            dataKey="revenue"
+            fill="#06b6d4"
+            radius={[8, 8, 0, 0]}
+            isAnimationActive={true}
+            animationDuration={700}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
