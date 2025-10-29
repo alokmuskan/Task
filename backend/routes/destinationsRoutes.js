@@ -1,16 +1,10 @@
+// backend/routes/destinationsRoutes.js
 import express from "express";
+import { getAllDestinations } from "../controllers/destinationsController.js";
+
 const router = express.Router();
 
-// Temporary test route
-router.get("/", (req, res) => {
-  res.json({
-    message: "Destinations fetched successfully ✅",
-    destinations: [
-      { id: 1, name: "Jaipur", country: "India", rating: 4.7 },
-      { id: 2, name: "Bali", country: "Indonesia", rating: 4.8 },
-      { id: 3, name: "Paris", country: "France", rating: 4.9 },
-    ],
-  });
-});
+// Route to fetch list of destinations
+router.get("/", getAllDestinations);
 
 export default router;
