@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import destinationsRoutes from "./routes/destinationsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js"; // ✅ added
+import settingsRoutes from "./routes/settingsRoutes.js";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/destinations", destinationsRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // ✅ Server Start
 const PORT = process.env.PORT || 5000;
