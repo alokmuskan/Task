@@ -7,7 +7,9 @@ import { useState } from "react";
 import MyLineChart from "../components/Charts/LineChart";
 import MyBarChart from "../components/Charts/BarChart";
 import MyPieChart from "../components/Charts/PieChart";
+
 import TouristStats from "../components/TouristStats";
+import TourismInsights from "../components/TourismInsights";
 
 export default function Dashboard() {
   const { statsData, chartData, refreshStats } = useDashboardStore();
@@ -139,6 +141,7 @@ export default function Dashboard() {
           }}
         >
           <TouristStats />
+          <TourismInsights />
         </motion.section>
       </main>
     </div>
