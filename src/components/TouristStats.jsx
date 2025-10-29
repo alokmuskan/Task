@@ -1,8 +1,24 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
-import { RefreshCw, Globe2, Users, MapPin, TrendingUp } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  RefreshCw,
+  Globe2,
+  Users,
+  MapPin,
+  TrendingUp,
+  BarChart2,
+} from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 const mockData = {
   2023: {
@@ -51,11 +67,24 @@ export default function TouristStats() {
     setStats(mockData[selectedYear][selectedRegion]);
   };
 
+  const chartData = Object.keys(mockData[year]).map((r) => ({
+    region: r,
+    visitors: mockData[year][r].visitors,
+    revenue: mockData[year][r].revenue,
+    growth: mockData[year][r].growth,
+  }));
+
   return (
-    <section className="bg-white rounded-2xl p-8 shadow-md mt-12">
+    <motion.section
+      className="bg-gray-100 rounded-2xl p-8 shadow-md mt-12 border border-gray-200"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      {/* Header */}
       <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-        <h2 className="text-xl font-semibold text-gray-800">
-          🌍 Tourist Statistics Overview
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+          <Globe2 className="text-sky-600" /> Tourist Statistics Overview
         </h2>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -63,7 +92,7 @@ export default function TouristStats() {
           <select
             value={year}
             onChange={(e) => handleFilterChange(e.target.value, null)}
-            className="border border-gray-300 rounded-xl px-4 py-2 text-gray-700 focus:ring-2 focus:ring-sky-500"
+            className="border border-gray-300 bg-white rounded-xl px-4 py-2 text-gray-700 focus:ring-2 focus:ring-sky-500"
           >
             <option>2023</option>
             <option>2024</option>
@@ -74,7 +103,7 @@ export default function TouristStats() {
           <select
             value={region}
             onChange={(e) => handleFilterChange(null, e.target.value)}
-            className="border border-gray-300 rounded-xl px-4 py-2 text-gray-700 focus:ring-2 focus:ring-sky-500"
+            className="border border-gray-300 bg-white rounded-xl px-4 py-2 text-gray-700 focus:ring-2 focus:ring-sky-500"
           >
             <option>Asia</option>
             <option>Europe</option>
@@ -86,12 +115,13 @@ export default function TouristStats() {
             onClick={handleRefresh}
             disabled={isRefreshing}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
-              ${isRefreshing ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-600"}`}
+              ${
+                isRefreshing
+                  ? "bg-sky-400 cursor-not-allowed"
+                  : "bg-sky-600 hover:bg-sky-700"
+              }`}
           >
-            <RefreshCw
-              size={18}
-              className={isRefreshing ? "animate-spin" : ""}
-            />
+            <RefreshCw size={18} className={isRefreshing ? "animate-spin" : ""} />
             {isRefreshing ? "Refreshing..." : "Refresh Stats"}
           </button>
         </div>
@@ -102,36 +132,62 @@ export default function TouristStats() {
         <StatCard
           title="Total Visitors"
           value={stats.visitors}
-          icon={<Users className="text-sky-500" />}
-          suffix=""
+          icon={<Users className="text-sky-600" />}
         />
         <StatCard
           title="Top Country"
           value={stats.topCountry}
-          icon={<MapPin className="text-sky-500" />}
+          icon={<MapPin className="text-sky-600" />}
         />
         <StatCard
           title="Revenue (Billion $)"
           value={stats.revenue}
-          icon={<BarChart2 className="text-sky-500" />}
+          icon={<BarChart2 className="text-sky-600" />}
         />
         <StatCard
           title="Growth Rate (%)"
           value={stats.growth}
-          icon={<TrendingUp className="text-sky-500" />}
+          icon={<TrendingUp className="text-sky-600" />}
           suffix="%"
         />
       </div>
-    </section>
+
+      {/* Chart Section */}
+      <motion.div
+        className="mt-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      >
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          Regional Comparison – {year}
+        </h3>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="region" stroke="#374151" />
+              <YAxis stroke="#374151" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="visitors" fill="#0284c7" name="Visitors" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="revenue" fill="#0ea5e9" name="Revenue ($B)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="growth" fill="#38bdf8" name="Growth (%)" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
+    </motion.section>
   );
 }
 
+// --- Stat Card ---
 function StatCard({ title, value, icon, suffix = "" }) {
   const isNumeric = typeof value === "number";
 
   return (
     <motion.div
-      className="bg-gray-50 rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex items-center justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-300"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
