@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
+import { useEffect } from "react";
 import { useDashboardStore } from "../store/useDashboardStore";
 import { useState } from "react";
 
@@ -12,6 +13,7 @@ import TouristStats from "../components/TouristStats";
 import TourismInsights from "../components/TourismInsights";
 
 export default function Dashboard() {
+  const { loadDashboardFromServer, loadAnalyticsFromServer } = useDashboardStore();
   const { statsData, chartData, refreshStats } = useDashboardStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -20,6 +22,12 @@ export default function Dashboard() {
     refreshStats(); // trigger Zustand update
     setTimeout(() => setIsRefreshing(false), 2000);
   };
+
+  useEffect(() => {
+    // fire-and-forget; store handles fallback if backend fails
+    loadDashboardFromServer();
+    loadAnalyticsFromServer();
+  }, []);
 
   return (
     // 🔹 Slight gradient background for subtle depth
