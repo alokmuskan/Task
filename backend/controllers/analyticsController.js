@@ -20,6 +20,16 @@ export const getAnalyticsData = async (req, res) => {
         { month: "Nov", bookings: 790 },
         { month: "Dec", bookings: 850 },
       ],
+      quarterlyRevenue: [
+        { quarter: "Q1", revenue: 12500 },
+        { quarter: "Q2", revenue: 16200 },
+        { quarter: "Q3", revenue: 18250 },
+        { quarter: "Q4", revenue: 21000 },
+      ],
+      touristType: [
+        { name: "International", value: 540 },
+        { name: "Domestic", value: 760 },
+      ],
     };
 
     res.status(200).json({ analytics });
