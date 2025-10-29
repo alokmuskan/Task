@@ -2,13 +2,11 @@ import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
 import { useDashboardStore } from "../store/useDashboardStore";
-
 import { useState } from "react";
 
 import MyLineChart from "../components/Charts/LineChart";
 import MyBarChart from "../components/Charts/BarChart";
 import MyPieChart from "../components/Charts/PieChart";
-
 import TouristStats from "../components/TouristStats";
 
 export default function Dashboard() {
@@ -18,9 +16,9 @@ export default function Dashboard() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     refreshStats(); // trigger Zustand update
-    // simulate a short refresh duration for smooth animation
     setTimeout(() => setIsRefreshing(false), 2000);
   };
+
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
@@ -34,18 +32,18 @@ export default function Dashboard() {
             </div>
 
             {/* Refresh Button */}
-              <button
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
-                  ${isRefreshing ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-600"}`}
-                >
-                <RefreshCw
-                  size={18}
-                  className={isRefreshing ? "animate-spin" : ""}
-                />
-                {isRefreshing ? "Refreshing..." : "Refresh Stats"}
-              </button>
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
+                ${isRefreshing ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-600"}`}
+            >
+              <RefreshCw
+                size={18}
+                className={isRefreshing ? "animate-spin" : ""}
+              />
+              {isRefreshing ? "Refreshing..." : "Refresh Stats"}
+            </button>
           </div>
 
           {/* Cards */}
@@ -86,7 +84,9 @@ export default function Dashboard() {
               boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
             }}
           >
-            <h3 className="text-lg font-semibold mb-4 text-white">Visitor Growth</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">
+              Visitor Growth
+            </h3>
             <MyLineChart data={chartData.line} />
           </motion.div>
 
@@ -103,7 +103,9 @@ export default function Dashboard() {
                 boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
               }}
             >
-              <h3 className="text-lg font-semibold mb-4 text-white">Revenue Overview</h3>
+              <h3 className="text-lg font-semibold mb-4 text-white">
+                Revenue Overview
+              </h3>
               <MyBarChart data={chartData.bar} />
             </motion.div>
 
@@ -118,12 +120,26 @@ export default function Dashboard() {
                 boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
               }}
             >
-              <h3 className="text-lg font-semibold mb-4 text-white">Tourism Categories</h3>
+              <h3 className="text-lg font-semibold mb-4 text-white">
+                Tourism Categories
+              </h3>
               <MyPieChart data={chartData.pie} />
             </motion.div>
           </div>
         </section>
-        <TouristStats />
+
+        {/* Tourist Stats Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+          whileHover={{
+            scale: 1.02,
+            boxShadow: "0px 8px 25px rgba(14,165,233,0.3)",
+          }}
+        >
+          <TouristStats />
+        </motion.section>
       </main>
     </div>
   );
@@ -143,14 +159,21 @@ function Card({ title, value, icon }) {
       whileTap={{ scale: 0.97 }}
     >
       <div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{title}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+          {title}
+        </p>
         <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
           {isNaN(numericValue) ? (
             value
           ) : (
             <>
               {value.includes("$") && "$"}
-              <CountUp key={numericValue} end={numericValue} duration={2.5} separator="," />
+              <CountUp
+                key={numericValue}
+                end={numericValue}
+                duration={2.5}
+                separator=","
+              />
             </>
           )}
         </h4>
