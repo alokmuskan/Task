@@ -3,12 +3,22 @@ import CountUp from "react-countup";
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
 import { useDashboardStore } from "../store/useDashboardStore";
 
+import { useState } from "react";
+
 import MyLineChart from "../components/Charts/LineChart";
 import MyBarChart from "../components/Charts/BarChart";
 import MyPieChart from "../components/Charts/PieChart";
 
 export default function Dashboard() {
   const { statsData, chartData, refreshStats } = useDashboardStore();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    refreshStats(); // trigger Zustand update
+    // simulate a short refresh duration for smooth animation
+    setTimeout(() => setIsRefreshing(false), 2000);
+  };
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
@@ -22,13 +32,18 @@ export default function Dashboard() {
             </div>
 
             {/* Refresh Button */}
-            <button
-              onClick={refreshStats}
-              className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 transition-all"
-            >
-              <RefreshCw size={18} />
-              Refresh Stats
-            </button>
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
+                  ${isRefreshing ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-600"}`}
+                >
+                <RefreshCw
+                  size={18}
+                  className={isRefreshing ? "animate-spin" : ""}
+                />
+                {isRefreshing ? "Refreshing..." : "Refresh Stats"}
+              </button>
           </div>
 
           {/* Cards */}
