@@ -1,9 +1,9 @@
 // src/store/useDashboardStore.js
 import { create } from "zustand";
-import api from "../lib/api"; // <-- new
+import api from "../lib/api";
 
 export const useDashboardStore = create((set, get) => {
-  // (keep your existing initial state here, e.g. statsData, chartData, tourismInsights, etc.)
+  // ---------- INITIAL STATE ----------
   const initialStats = {
     totalVisitors: 24320,
     topDestination: "Bihar",
@@ -40,64 +40,74 @@ export const useDashboardStore = create((set, get) => {
     ecoFriendlyTours: 35,
   };
 
+  // ---------- STORE ----------
   return {
     selectedLocation: "India",
     statsData: { ...initialStats },
     chartData: JSON.parse(JSON.stringify(initialChartData)),
     tourismInsights: { ...initialTourismInsights },
 
-    // existing actions you already have (refreshStats, resetTourismInsights etc.)
+    // ---------- ACTIONS ----------
+
+    // Update selected location
     setLocation: (location) => set({ selectedLocation: location }),
 
-    refreshStats: () =>
-      set((state) => {
-        const random = (min, max) =>
-          Math.floor(Math.random() * (max - min + 1)) + min;
+    // Random refresh for demo (works for UI refresh)
+    refreshStats: () => {
+      const random = (min, max) =>
+        Math.floor(Math.random() * (max - min + 1)) + min;
 
-        const newStats = {
-          totalVisitors: random(20000, 50000),
-          topDestination: ["Bali", "Paris", "Tokyo", "Maldives", "New York"][
-            random(0, 4)
-          ],
-          revenue: random(30000, 80000),
-          activeRegions: random(10, 30),
-        };
+      const newStats = {
+        totalVisitors: random(20000, 50000),
+        topDestination: ["Bali", "Paris", "Tokyo", "Maldives", "New York"][random(0, 4)],
+        revenue: random(30000, 80000),
+        activeRegions: random(10, 30),
+      };
 
-        const newLine = state.chartData.line.map((d) => ({
-          ...d,
-          value: random(100, 700),
-        }));
+      const newLine = get().chartData.line.map((d) => ({
+        ...d,
+        value: random(100, 700),
+      }));
 
-        const newBar = state.chartData.bar.map((d) => ({
-          ...d,
-          revenue: random(3000, 9000),
-        }));
+      const newBar = get().chartData.bar.map((d) => ({
+        ...d,
+        revenue: random(3000, 9000),
+      }));
 
-        const newPie = state.chartData.pie.map((d) => ({
-          ...d,
-          value: random(150, 500),
-        }));
+      const newPie = get().chartData.pie.map((d) => ({
+        ...d,
+        value: random(150, 500),
+      }));
 
-        return {
-          statsData: newStats,
-          chartData: { line: newLine, bar: newBar, pie: newPie },
-        };
-      }),
+      set({
+        statsData: newStats,
+        chartData: { line: newLine, bar: newBar, pie: newPie },
+      });
+    },
 
-    resetTourismInsights: () =>
+    // ✅ Proper reset for all sections (fix)
+    resetTourismInsights: () => {
       set({
         statsData: { ...initialStats },
         chartData: JSON.parse(JSON.stringify(initialChartData)),
         tourismInsights: { ...initialTourismInsights },
-      }),
+      });
 
-    // ---------- NEW: server loaders ----------
-    // Fetch dashboard/stats data from backend
+      // If the backend was loaded before, re-sync with initial clean state
+      // Optional small delay ensures charts visually reset
+      setTimeout(() => {
+        set({
+          statsData: { ...initialStats },
+          chartData: JSON.parse(JSON.stringify(initialChartData)),
+          tourismInsights: { ...initialTourismInsights },
+        });
+      }, 50);
+    },
+
+    // ---------- SERVER LOADERS ----------
     loadDashboardFromServer: async () => {
       try {
-        // hit your backend dashboard route (create it in backend if not present)
         const { data } = await api.get("/api/dashboard");
-        // expected shape: { statsData: {...}, chartData: {...} }
         if (data?.statsData || data?.chartData) {
           set({
             statsData: data.statsData || get().statsData,
@@ -111,17 +121,14 @@ export const useDashboardStore = create((set, get) => {
       }
     },
 
-    // Fetch analytics (or alternate endpoint) - for example /api/analytics
     loadAnalyticsFromServer: async () => {
       try {
         const { data } = await api.get("/api/analytics");
-        // adapt this depending on your backend shape
-        // e.g. data might return { visitorsByYear, chartData }
+
         if (data?.chartData) {
           set({ chartData: data.chartData });
         } else if (data?.visitorsByYear) {
-          // optional mapping: convert visitorsByYear -> chartData.line
-          const mapped = (data.visitorsByYear || []).map((d) => ({
+          const mapped = data.visitorsByYear.map((d) => ({
             date: d.year.toString(),
             value: d.visitors,
           }));
