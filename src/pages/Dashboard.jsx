@@ -1,18 +1,14 @@
-import { useState } from "react";
-import CountUp from "react-countup";
 import { motion } from "framer-motion";
+import CountUp from "react-countup";
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
+import { useDashboardStore } from "../store/useDashboardStore";
 
 import MyLineChart from "../components/Charts/LineChart";
 import MyBarChart from "../components/Charts/BarChart";
 import MyPieChart from "../components/Charts/PieChart";
 
 export default function Dashboard() {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleRefresh = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
+  const { statsData, chartData, refreshStats } = useDashboardStore();
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
@@ -27,7 +23,7 @@ export default function Dashboard() {
 
             {/* Refresh Button */}
             <button
-              onClick={handleRefresh}
+              onClick={refreshStats}
               className="flex items-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 transition-all"
             >
               <RefreshCw size={18} />
@@ -38,33 +34,29 @@ export default function Dashboard() {
           {/* Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card
-              key={`visitors-${refreshKey}`}
               title="Total Visitors"
-              value="24,320"
+              value={statsData.totalVisitors.toLocaleString()}
               icon={<Users className="text-sky-500" />}
             />
             <Card
-              key={`destination-${refreshKey}`}
               title="Top Destination"
-              value="Bali"
+              value={statsData.topDestination}
               icon={<MapPin className="text-sky-500" />}
             />
             <Card
-              key={`revenue-${refreshKey}`}
               title="Revenue"
-              value="$52,430"
+              value={`$${statsData.revenue.toLocaleString()}`}
               icon={<BarChart2 className="text-sky-500" />}
             />
             <Card
-              key={`regions-${refreshKey}`}
               title="Active Regions"
-              value="18"
+              value={statsData.activeRegions.toString()}
               icon={<Globe className="text-sky-500" />}
             />
           </div>
         </section>
 
-        {/*  Charts Section */}
+        {/* Charts Section */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Line Chart */}
           <motion.div
@@ -78,7 +70,7 @@ export default function Dashboard() {
             }}
           >
             <h3 className="text-lg font-semibold mb-4 text-white">Visitor Growth</h3>
-            <MyLineChart key={refreshKey} refreshKey={refreshKey} />
+            <MyLineChart data={chartData.line} />
           </motion.div>
 
           {/* Right Column */}
@@ -95,7 +87,7 @@ export default function Dashboard() {
               }}
             >
               <h3 className="text-lg font-semibold mb-4 text-white">Revenue Overview</h3>
-              <MyBarChart key={refreshKey} refreshKey={refreshKey} />
+              <MyBarChart data={chartData.bar} />
             </motion.div>
 
             {/* Pie Chart */}
@@ -110,7 +102,7 @@ export default function Dashboard() {
               }}
             >
               <h3 className="text-lg font-semibold mb-4 text-white">Tourism Categories</h3>
-              <MyPieChart key={refreshKey} refreshKey={refreshKey} />
+              <MyPieChart data={chartData.pie} />
             </motion.div>
           </div>
         </section>
@@ -122,6 +114,7 @@ export default function Dashboard() {
 // Card Component
 function Card({ title, value, icon }) {
   const numericValue = parseInt(value.replace(/[^0-9]/g, ""));
+
   return (
     <motion.div
       className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 flex items-center justify-between cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
@@ -140,7 +133,6 @@ function Card({ title, value, icon }) {
             <>
               {value.includes("$") && "$"}
               <CountUp key={numericValue} end={numericValue} duration={2.5} separator="," />
-              {value.includes("k") && "k"}
             </>
           )}
         </h4>
