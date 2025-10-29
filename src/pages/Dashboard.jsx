@@ -9,6 +9,8 @@ import MyLineChart from "../components/Charts/LineChart";
 import MyBarChart from "../components/Charts/BarChart";
 import MyPieChart from "../components/Charts/PieChart";
 
+import TouristStats from "../components/TouristStats";
+
 export default function Dashboard() {
   const { statsData, chartData, refreshStats } = useDashboardStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -121,6 +123,7 @@ export default function Dashboard() {
             </motion.div>
           </div>
         </section>
+        <TouristStats />
       </main>
     </div>
   );
