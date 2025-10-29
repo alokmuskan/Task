@@ -13,25 +13,29 @@ const initialData = [
 
 export default function TouristStats() {
   const [data, setData] = useState(initialData);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // 🔄 Generate new mock data
   const refreshData = () => {
+    setIsRefreshing(true);
     const newData = initialData.map((item) => ({
       ...item,
       visitors: Math.floor(Math.random() * 5000) + 1500,
     }));
-    setData(newData);
+    setTimeout(() => {
+      setData(newData);
+      setIsRefreshing(false);
+    }, 1000);
   };
 
-//   // ⏱️ (Commented Out) Automatic refresh every 5 seconds
-  
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       refreshData();
-//     }, 5000);
-//     return () => clearInterval(interval);
-//   }, []);
-  
+  // ⏱️ (Commented Out) Automatic refresh every 5 seconds
+  /*
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshData();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+  */
 
   return (
     <motion.div
@@ -51,13 +55,18 @@ export default function TouristStats() {
           <p className="text-sm text-gray-400">Most visited destinations</p>
         </div>
 
-        {/* Refresh Button */}
+        {/* 🔁 Refresh Button */}
         <button
           onClick={refreshData}
-          className="flex items-center gap-2 px-3 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 transition-all"
+          disabled={isRefreshing}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
+            ${isRefreshing ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-600"}`}
         >
-          <RefreshCw size={16} />
-          Refresh
+          <RefreshCw
+            size={18}
+            className={isRefreshing ? "animate-spin" : ""}
+          />
+          {isRefreshing ? "Refreshing..." : "Refresh Stats"}
         </button>
       </div>
 
@@ -69,10 +78,18 @@ export default function TouristStats() {
         className="w-full h-64"
       >
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+          <BarChart
+            data={data}
+            margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
+          >
             <XAxis dataKey="name" stroke="#94a3b8" />
             <Tooltip />
-            <Bar dataKey="visitors" fill="#0ea5e9" radius={[8, 8, 0, 0]} animationDuration={1000} />
+            <Bar
+              dataKey="visitors"
+              fill="#0ea5e9"
+              radius={[8, 8, 0, 0]}
+              animationDuration={1000}
+            />
           </BarChart>
         </ResponsiveContainer>
       </motion.div>
