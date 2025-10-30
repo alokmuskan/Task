@@ -1,8 +1,16 @@
-import { Search, Bell, User } from "lucide-react";
+import { Search, Bell, User, Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Topbar() {
-  const { theme } = useTheme();
+  const { theme, setTheme, toggleTheme } = useTheme(); // ✅ Added toggleTheme
+
+  // ✅ Ensure the theme toggles immediately when clicked
+  const handleThemeToggle = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
   return (
     <header
@@ -58,6 +66,21 @@ export default function Topbar() {
             }`}
         >
           Refresh
+        </button>
+
+        {/* ✅ Theme Toggle Button */}
+        <button
+          onClick={handleThemeToggle}
+          className={`p-2 rounded-md transition ${
+            theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+          }`}
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <Sun size={18} className="text-yellow-400" />
+          ) : (
+            <Moon size={18} className="text-gray-600" />
+          )}
         </button>
       </div>
 
