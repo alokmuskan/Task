@@ -19,6 +19,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useTheme } from "../context/ThemeContext";
 
 const mockData = {
   2023: {
@@ -43,6 +44,7 @@ export default function TouristStats() {
   const [region, setRegion] = useState("Asia");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stats, setStats] = useState(mockData[year][region]);
+  const { theme } = useTheme();
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -76,41 +78,52 @@ export default function TouristStats() {
 
   return (
     <motion.section
-      className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-md mt-12 transition-all duration-500"
+      className={`rounded-2xl p-8 shadow-md mt-12 transition-colors duration-300 ${
+        theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800"
+      }`}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
       {/* Header */}
-      <div className="flex flex-wrap justify-between items-center mb-6 gap-4 bg-gray-50 dark:bg-gray-800 rounded-xl p-4 transition-colors">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+      <div
+        className={`flex flex-wrap justify-between items-center mb-6 gap-4 rounded-2xl p-4 transition-colors duration-300 ${
+          theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+        }`}
+      >
+        <h2 className="text-xl font-semibold flex items-center gap-2">
           <Globe2 className="text-sky-500" /> Tourist Statistics Overview
         </h2>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Year Filter */}
           <select
             value={year}
             onChange={(e) => handleFilterChange(e.target.value, null)}
-            className="border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-sky-500"
+            className={`rounded-xl px-4 py-2 focus:ring-2 transition-all duration-200 ${
+              theme === "dark"
+                ? "bg-gray-900 border border-gray-700 text-gray-100 focus:ring-sky-600"
+                : "bg-white border border-gray-300 text-gray-800 focus:ring-sky-400"
+            }`}
           >
             <option>2023</option>
             <option>2024</option>
             <option>2025</option>
           </select>
 
-          {/* Region Filter */}
           <select
             value={region}
             onChange={(e) => handleFilterChange(null, e.target.value)}
-            className="border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-sky-500"
+            className={`rounded-xl px-4 py-2 focus:ring-2 transition-all duration-200 ${
+              theme === "dark"
+                ? "bg-gray-900 border border-gray-700 text-gray-100 focus:ring-sky-600"
+                : "bg-white border border-gray-300 text-gray-800 focus:ring-sky-400"
+            }`}
           >
             <option>Asia</option>
             <option>Europe</option>
             <option>America</option>
           </select>
 
-          {/* Refresh Button */}
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
@@ -133,47 +146,58 @@ export default function TouristStats() {
           title="Total Visitors"
           value={stats.visitors}
           icon={<Users className="text-sky-500" />}
+          theme={theme}
         />
         <StatCard
           title="Top Country"
           value={stats.topCountry}
           icon={<MapPin className="text-sky-500" />}
+          theme={theme}
         />
         <StatCard
           title="Revenue (Billion $)"
           value={stats.revenue}
           icon={<BarChart2 className="text-sky-500" />}
+          theme={theme}
         />
         <StatCard
           title="Growth Rate (%)"
           value={stats.growth}
           icon={<TrendingUp className="text-sky-500" />}
           suffix="%"
+          theme={theme}
         />
       </div>
 
       {/* Chart Section */}
       <motion.div
-        className="mt-10 bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl shadow-sm transition-colors"
+        className={`mt-10 p-6 rounded-2xl shadow-sm transition-colors duration-300 ${
+          theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+        }`}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <h3 className="text-lg font-medium text-gray-800 dark:text-gray-100 mb-4">
+        <h3
+          className={`text-lg font-medium mb-4 ${
+            theme === "dark" ? "text-gray-100" : "text-gray-800"
+          }`}
+        >
           📊 Yearly Regional Comparison – {year}
         </h3>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#4b5563" />
+            <BarChart data={chartData}>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke={theme === "dark" ? "#374151" : "#e5e7eb"}
+              />
               <XAxis
                 dataKey="region"
-                stroke="currentColor"
-                tick={{ fill: "currentColor" }}
+                stroke={theme === "dark" ? "#e5e7eb" : "#374151"}
               />
               <YAxis
-                stroke="currentColor"
-                tick={{ fill: "currentColor" }}
+                stroke={theme === "dark" ? "#e5e7eb" : "#475569"}
                 tickFormatter={(value) =>
                   value >= 1000000
                     ? `${(value / 1000000).toFixed(1)}M`
@@ -182,18 +206,11 @@ export default function TouristStats() {
                     : value
                 }
               />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1f2937",
-                  border: "none",
-                  borderRadius: "8px",
-                  color: "#f9fafb",
-                }}
-              />
+              <Tooltip />
               <Legend />
-              <Bar dataKey="visitors" fill="#0ea5e9" name="Visitors" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="revenue" fill="#14b8a6" name="Revenue ($B)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="growth" fill="#f59e0b" name="Growth (%)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="visitors" fill="#0ea5e9" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="revenue" fill="#14b8a6" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="growth" fill="#f59e0b" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -202,20 +219,29 @@ export default function TouristStats() {
   );
 }
 
-function StatCard({ title, value, icon, suffix = "" }) {
+function StatCard({ title, value, icon, suffix = "", theme }) {
   const isNumeric = typeof value === "number";
-
   return (
     <motion.div
-      className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className={`rounded-2xl shadow-sm p-6 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ${
+        theme === "dark"
+          ? "bg-gray-800 text-gray-100"
+          : "bg-white text-gray-800"
+      }`}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       whileHover={{ scale: 1.03 }}
     >
       <div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{title}</p>
-        <h4 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+        <p
+          className={`text-sm mb-1 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
+          {title}
+        </p>
+        <h4 className="text-2xl font-semibold">
           {isNumeric ? (
             <CountUp end={value} duration={2} separator="," suffix={suffix} />
           ) : (
