@@ -1,20 +1,36 @@
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, BarChart2, MapPin, Settings } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Sidebar() {
+  const { theme } = useTheme();
+
   const linkClasses = ({ isActive }) =>
     `flex items-center gap-3 w-full text-left p-3 rounded-xl transition-all duration-200 ${
       isActive
-        ? "bg-sky-100 text-sky-600 font-semibold shadow-sm"
-        : "hover:bg-sky-50 hover:text-sky-600 text-gray-700"
+        ? "bg-sky-100 dark:bg-sky-900 text-sky-600 dark:text-sky-300 font-semibold shadow-sm"
+        : "hover:bg-sky-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
     }`;
 
   return (
-    <aside className="w-64 bg-white shadow-md p-6 flex flex-col justify-between h-screen sticky top-0">
+    <aside
+      className={`w-64 p-6 flex flex-col justify-between h-screen sticky top-0 shadow-md transition-colors duration-300
+        ${
+          theme === "dark"
+            ? "bg-gray-900 text-gray-100 shadow-gray-800"
+            : "bg-white text-gray-800"
+        }`}
+    >
       <div>
         {/* Brand */}
         <h1 className="text-2xl font-bold text-sky-600 mb-1">TourismDash</h1>
-        <p className="text-sm text-gray-500 mb-8">Analytics & insights</p>
+        <p
+          className={`text-sm mb-8 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
+          Analytics & insights
+        </p>
 
         {/* Navigation */}
         <nav className="space-y-2">
@@ -37,7 +53,11 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="text-sm text-gray-400 text-center">
+      <div
+        className={`text-sm text-center ${
+          theme === "dark" ? "text-gray-500" : "text-gray-400"
+        }`}
+      >
         © 2025 TourismDash
       </div>
     </aside>

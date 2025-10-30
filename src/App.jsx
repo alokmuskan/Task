@@ -6,9 +6,12 @@ import Destinations from "./pages/Destinations";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 
+import { useTheme } from "./context/ThemeContext";
+
 export default function App() {
+  const { theme } = useTheme();
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className={`min-h-screen flex ${theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"}`}>
       {/* Sidebar */}
       <Sidebar />
 

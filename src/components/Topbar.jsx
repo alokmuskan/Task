@@ -1,26 +1,62 @@
-import { Menu } from "lucide-react";
-
 import { Search, Bell, User } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Topbar() {
+  const { theme } = useTheme();
+
   return (
-    <header className="flex items-center justify-between bg-white border-b px-6 py-4 sticky top-0 z-50 shadow-sm">
+    <header
+      className={`flex items-center justify-between border-b px-6 py-4 sticky top-0 z-50 shadow-sm transition-colors duration-300
+        ${
+          theme === "dark"
+            ? "bg-gray-900 border-gray-800 text-gray-100"
+            : "bg-white border-gray-200 text-gray-800"
+        }`}
+    >
       {/* Search Bar */}
-      <div className="flex items-center w-1/3 bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-sky-400">
-        <Search size={18} className="text-gray-500 mr-2" />
+      <div
+        className={`flex items-center w-1/3 rounded-xl px-3 py-2 border focus-within:ring-2 transition-all duration-200
+          ${
+            theme === "dark"
+              ? "bg-gray-800 border-gray-700 text-gray-200 focus-within:ring-sky-600"
+              : "bg-gray-50 border-gray-300 text-gray-700 focus-within:ring-sky-400"
+          }`}
+      >
+        <Search
+          size={18}
+          className={`mr-2 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        />
         <input
           type="text"
           placeholder="Search destinations, metrics..."
-          className="bg-transparent w-full outline-none text-gray-700 placeholder:text-gray-400"
+          className={`bg-transparent w-full outline-none placeholder:text-gray-400 ${
+            theme === "dark" ? "text-gray-100" : "text-gray-700"
+          }`}
         />
       </div>
 
       {/* Export / Refresh Buttons */}
       <div className="flex gap-3">
-        <button className="px-4 py-2 bg-sky-500 text-white rounded-xl hover:bg-sky-600 transition">
+        <button
+          className={`px-4 py-2 rounded-xl transition
+            ${
+              theme === "dark"
+                ? "bg-sky-700 hover:bg-sky-600 text-white"
+                : "bg-sky-500 hover:bg-sky-600 text-white"
+            }`}
+        >
           Export
         </button>
-        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition">
+        <button
+          className={`px-4 py-2 rounded-xl transition
+            ${
+              theme === "dark"
+                ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+        >
           Refresh
         </button>
       </div>
@@ -28,18 +64,41 @@ export default function Topbar() {
       {/* Notifications + Profile */}
       <div className="flex items-center gap-4">
         <button
-          className="p-2 rounded-md hover:bg-gray-100"
+          className={`p-2 rounded-md transition ${
+            theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+          }`}
           aria-label="Notifications"
         >
-          <Bell size={18} className="text-gray-600" />
+          <Bell
+            size={18}
+            className={`${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}
+          />
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-sky-600 text-white flex items-center justify-center font-semibold">
+          <div
+            className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold 
+              ${
+                theme === "dark"
+                  ? "bg-sky-700 text-white"
+                  : "bg-sky-600 text-white"
+              }`}
+          >
             A
           </div>
-          <span className="hidden sm:inline text-sm font-medium">Admin</span>
-          <User size={18} className="text-gray-500 hidden sm:inline" />
+          <span
+            className={`hidden sm:inline text-sm font-medium ${
+              theme === "dark" ? "text-gray-100" : "text-gray-800"
+            }`}
+          >
+            Admin
+          </span>
+          <User
+            size={18}
+            className={`hidden sm:inline ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`}
+          />
         </div>
       </div>
     </header>
