@@ -6,11 +6,12 @@ export default function Sidebar() {
   const { theme } = useTheme();
 
   const linkClasses = ({ isActive }) =>
-    `flex items-center gap-3 w-full text-left p-3 rounded-xl transition-all duration-200 ${
-      isActive
-        ? "bg-sky-100 dark:bg-sky-900 text-sky-600 dark:text-sky-300 font-semibold shadow-sm"
-        : "hover:bg-sky-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
-    }`;
+    `flex items-center gap-3 w-full text-left p-3 rounded-xl transition-all duration-200
+     ${
+       isActive
+         ? "bg-sky-700 text-white font-semibold shadow-sm" // Active link color matches Topbar
+         : "text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-gray-800"
+     }`;
 
   return (
     <aside
