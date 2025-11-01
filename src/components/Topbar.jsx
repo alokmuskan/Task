@@ -46,7 +46,11 @@ export default function Topbar() {
           type="text"
           placeholder="Search destinations..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+          const value = e.target.value;
+          setQuery(value);
+          window.dispatchEvent(new CustomEvent("searchDestination", { detail: value }));    
+          }}
           onKeyDown={handleSearchKeyDown}
           className={`bg-transparent w-full outline-none placeholder:text-gray-400 ${
             theme === "dark" ? "text-gray-100" : "text-gray-700"
