@@ -22,10 +22,12 @@ export default function Sidebar() {
       {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-lg bg-sky-600 text-white focus:outline-none"
+        className="fixed top-4 left-4 md:hidden z-[100] p-2 rounded-lg bg-sky-600 text-white shadow-md focus:outline-none"
+        style={{ marginLeft: '0.5rem' }} // optional alignment tweak
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
+
 
       {/* Sidebar */}
       <aside
