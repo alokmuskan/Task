@@ -3,6 +3,7 @@ import { BarChart2, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import api from "../lib/api";
 import { useTheme } from "../context/ThemeContext";
+import { useSearch } from "../context/SearchContext";
 import {
   LineChart,
   Line,
@@ -23,14 +24,17 @@ const COLORS = ["#0ea5e9", "#22c55e"];
 
 export default function Analytics() {
   const [analytics, setAnalytics] = useState(null);
+  const [filteredAnalytics, setFilteredAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const { theme } = useTheme();
+  const { searchQuery } = useSearch();
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
         const { data } = await api.get("/api/analytics");
         setAnalytics(data.analytics || {});
+        setFilteredAnalytics(data.analytics || {});
       } catch (err) {
         console.error("Error fetching analytics:", err);
       } finally {
@@ -40,11 +44,37 @@ export default function Analytics() {
     fetchAnalytics();
   }, []);
 
+  useEffect(() => {
+    if (!analytics) return;
+
+    if (searchQuery.trim() === "") {
+      setFilteredAnalytics(analytics);
+    } else {
+      const q = searchQuery.toLowerCase();
+
+      const filtered = {
+        ...analytics,
+        monthlyStats: analytics.monthlyStats?.filter((m) =>
+          m.month.toLowerCase().includes(q)
+        ),
+        quarterlyRevenue: analytics.quarterlyRevenue?.filter((qtr) =>
+          qtr.quarter.toLowerCase().includes(q)
+        ),
+        touristType: analytics.touristType?.filter((t) =>
+          t.name.toLowerCase().includes(q)
+        ),
+      };
+
+      setFilteredAnalytics(filtered);
+    }
+  }, [searchQuery, analytics]);
+
   if (loading) return <p className="p-6 text-gray-500">Loading analytics...</p>;
 
-  // Set chart stroke colors based on theme
   const chartStroke = theme === "dark" ? "#4b5563" : "#e5e7eb";
   const textColor = theme === "dark" ? "#e5e7eb" : "#374151";
+
+  const data = filteredAnalytics || analytics;
 
   return (
     <div
@@ -61,10 +91,10 @@ export default function Analytics() {
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
-          { title: "Total Users", value: analytics.totalUsers },
-          { title: "Bookings", value: analytics.totalBookings },
-          { title: "Avg. Spend", value: `₹${analytics.averageSpend}` },
-          { title: "Satisfaction", value: `${analytics.satisfactionRate}%` },
+          { title: "Total Users", value: data.totalUsers },
+          { title: "Bookings", value: data.totalBookings },
+          { title: "Avg. Spend", value: `₹${data.averageSpend}` },
+          { title: "Satisfaction", value: `${data.satisfactionRate}%` },
         ].map((card, i) => (
           <motion.div
             key={i}
@@ -107,7 +137,7 @@ export default function Analytics() {
               </tr>
             </thead>
             <tbody>
-              {analytics.monthlyStats?.map((m) => (
+              {data.monthlyStats?.map((m) => (
                 <tr
                   key={m.month}
                   className={`border-b ${
@@ -139,7 +169,7 @@ export default function Analytics() {
             <TrendingUp className="text-green-500" /> Monthly Bookings Trend
           </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={analytics.monthlyStats}>
+            <LineChart data={data.monthlyStats}>
               <CartesianGrid stroke={chartStroke} strokeDasharray="3 3" />
               <XAxis dataKey="month" stroke={textColor} />
               <YAxis stroke={textColor} />
@@ -170,7 +200,7 @@ export default function Analytics() {
             Quarterly Revenue
           </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={analytics.quarterlyRevenue}>
+            <BarChart data={data.quarterlyRevenue}>
               <CartesianGrid stroke={chartStroke} strokeDasharray="3 3" />
               <XAxis dataKey="quarter" stroke={textColor} />
               <YAxis stroke={textColor} />
@@ -181,11 +211,7 @@ export default function Analytics() {
                   color: textColor,
                 }}
               />
-              <Bar
-                dataKey="revenue"
-                fill="#0ea5e9"
-                radius={[8, 8, 0, 0]}
-              />
+              <Bar dataKey="revenue" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -202,7 +228,7 @@ export default function Analytics() {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={analytics.touristType}
+                data={data.touristType}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -210,7 +236,7 @@ export default function Analytics() {
                 outerRadius={100}
                 label
               >
-                {analytics.touristType.map((entry, index) => (
+                {data.touristType?.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
