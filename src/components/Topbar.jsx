@@ -1,15 +1,23 @@
+import { useState } from "react";
 import { Search, Bell, User, Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Topbar() {
-  const { theme, setTheme, toggleTheme } = useTheme(); // ✅ Added toggleTheme
+  const { theme, setTheme } = useTheme();
+  const [query, setQuery] = useState("");
 
-  // ✅ Ensure the theme toggles immediately when clicked
   const handleThemeToggle = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
+
+  // 🔍 Emit a custom event when user presses Enter
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      window.dispatchEvent(new CustomEvent("searchDestination", { detail: query }));
+    }
   };
 
   return (
@@ -32,20 +40,21 @@ export default function Topbar() {
       >
         <Search
           size={18}
-          className={`mr-2 ${
-            theme === "dark" ? "text-gray-400" : "text-gray-500"
-          }`}
+          className={`mr-2 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
         />
         <input
           type="text"
-          placeholder="Search destinations, metrics..."
+          placeholder="Search destinations..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
           className={`bg-transparent w-full outline-none placeholder:text-gray-400 ${
             theme === "dark" ? "text-gray-100" : "text-gray-700"
           }`}
         />
       </div>
 
-      {/* Export / Refresh Buttons */}
+      {/* Buttons (unchanged) */}
       <div className="flex gap-3">
         <button
           className={`px-4 py-2 rounded-xl transition
@@ -68,7 +77,7 @@ export default function Topbar() {
           Refresh
         </button>
 
-        {/* ✅ Theme Toggle Button */}
+        {/* Theme Toggle */}
         <button
           onClick={handleThemeToggle}
           className={`p-2 rounded-md transition ${
@@ -84,7 +93,7 @@ export default function Topbar() {
         </button>
       </div>
 
-      {/* Notifications + Profile */}
+      {/* Notifications + Profile (unchanged) */}
       <div className="flex items-center gap-4">
         <button
           className={`p-2 rounded-md transition ${
