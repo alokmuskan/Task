@@ -130,7 +130,7 @@ export default function Topbar() {
                   : "bg-sky-600 text-white"
               }`}
           >
-            A
+            AR
           </div>
           <span
             className={`hidden sm:inline text-sm font-medium ${
