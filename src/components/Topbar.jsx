@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Search, Bell, User, Sun, Moon } from "lucide-react";
+import { Search, Bell, User, Sun, Moon, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { useState } from "react";
 
 export default function Topbar() {
   const { theme, setTheme } = useTheme();
   const [query, setQuery] = useState("");
 
+  // ✅ Toggle Theme
   const handleThemeToggle = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
@@ -13,11 +14,17 @@ export default function Topbar() {
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
-  // 🔍 Emit a custom event when user presses Enter
-  const handleSearchKeyDown = (e) => {
-    if (e.key === "Enter") {
-      window.dispatchEvent(new CustomEvent("searchDestination", { detail: query }));
-    }
+  // ✅ Handle live search
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    window.dispatchEvent(new CustomEvent("searchDestination", { detail: value }));
+  };
+
+  // ✅ Clear search instantly
+  const handleClearSearch = () => {
+    setQuery("");
+    window.dispatchEvent(new CustomEvent("searchDestination", { detail: "" }));
   };
 
   return (
@@ -29,9 +36,9 @@ export default function Topbar() {
             : "bg-white border-gray-200 text-gray-800"
         }`}
     >
-      {/* Search Bar */}
+      {/* 🔍 Search Bar */}
       <div
-        className={`flex items-center w-1/3 rounded-xl px-3 py-2 border focus-within:ring-2 transition-all duration-200
+        className={`flex items-center w-1/3 rounded-xl px-3 py-2 border focus-within:ring-2 transition-all duration-200 relative
           ${
             theme === "dark"
               ? "bg-gray-800 border-gray-700 text-gray-200 focus-within:ring-sky-600"
@@ -44,21 +51,26 @@ export default function Topbar() {
         />
         <input
           type="text"
-          placeholder="Search destinations..."
           value={query}
-          onChange={(e) => {
-          const value = e.target.value;
-          setQuery(value);
-          window.dispatchEvent(new CustomEvent("searchDestination", { detail: value }));    
-          }}
-          onKeyDown={handleSearchKeyDown}
+          onChange={handleSearchChange}
+          placeholder="Search destinations, metrics..."
           className={`bg-transparent w-full outline-none placeholder:text-gray-400 ${
             theme === "dark" ? "text-gray-100" : "text-gray-700"
           }`}
         />
+        {/* ❌ Clear Button */}
+        {query && (
+          <button
+            onClick={handleClearSearch}
+            className="absolute right-3 text-gray-400 hover:text-gray-600 transition"
+            aria-label="Clear search"
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
-      {/* Buttons (unchanged) */}
+      {/* 🌈 Export / Refresh / Theme */}
       <div className="flex gap-3">
         <button
           className={`px-4 py-2 rounded-xl transition
@@ -80,8 +92,6 @@ export default function Topbar() {
         >
           Refresh
         </button>
-
-        {/* Theme Toggle */}
         <button
           onClick={handleThemeToggle}
           className={`p-2 rounded-md transition ${
@@ -97,7 +107,7 @@ export default function Topbar() {
         </button>
       </div>
 
-      {/* Notifications + Profile (unchanged) */}
+      {/* 🔔 Notifications + Profile */}
       <div className="flex items-center gap-4">
         <button
           className={`p-2 rounded-md transition ${
