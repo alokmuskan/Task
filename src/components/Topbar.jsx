@@ -1,12 +1,14 @@
 import { Search, Bell, User, Sun, Moon, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useState } from "react";
+import { useSearch } from "../context/SearchContext";
 
 export default function Topbar() {
   const { theme, setTheme } = useTheme();
-  const [query, setQuery] = useState("");
+  const { searchQuery, setSearchQuery } = useSearch();
+  const [query, setQuery] = useState(searchQuery || "");
 
-  // ✅ Toggle Theme
+  // ✅ Theme toggle with localStorage + document update
   const handleThemeToggle = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
@@ -14,16 +16,20 @@ export default function Topbar() {
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
-  // ✅ Handle live search
+  // ✅ Handle live search input
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setQuery(value);
-    window.dispatchEvent(new CustomEvent("searchDestination", { detail: value }));
+    setSearchQuery(value);
+    window.dispatchEvent(
+      new CustomEvent("searchDestination", { detail: value })
+    );
   };
 
   // ✅ Clear search instantly
   const handleClearSearch = () => {
     setQuery("");
+    setSearchQuery("");
     window.dispatchEvent(new CustomEvent("searchDestination", { detail: "" }));
   };
 
@@ -58,7 +64,6 @@ export default function Topbar() {
             theme === "dark" ? "text-gray-100" : "text-gray-700"
           }`}
         />
-        {/* ❌ Clear Button */}
         {query && (
           <button
             onClick={handleClearSearch}
