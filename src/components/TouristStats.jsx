@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import {
@@ -46,6 +46,22 @@ export default function TouristStats() {
   const [stats, setStats] = useState(mockData[year][region]);
   const { theme } = useTheme();
 
+  // ✅ Combine all stats into one array for searching
+  const allStats = Object.entries(mockData).flatMap(([year, regions]) =>
+    Object.entries(regions).map(([region, data]) => ({
+      year,
+      region,
+      ...data,
+    }))
+  );
+
+  const [filteredStats, setFilteredStats] = useState(allStats);
+
+  // derived stats for currently selected region/year (will change on search)
+  const visibleStats =
+  filteredStats.find((s) => s.year === year && s.region === region) ||
+  mockData[year][region];
+
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
@@ -68,6 +84,31 @@ export default function TouristStats() {
     setRegion(selectedRegion);
     setStats(mockData[selectedYear][selectedRegion]);
   };
+
+  // ✅ Listen to global search event
+  // useEffect(() => {
+  //   const handleSearch = (event) => {
+  //     const query = event.detail.toLowerCase();
+
+  //     if (!query) {
+  //       setFilteredStats(allStats);
+  //       return;
+  //     }
+
+  //     const filtered = allStats.filter(
+  //       (stat) =>
+  //         stat.region.toLowerCase().includes(query) ||
+  //         stat.year.toString().includes(query) ||
+  //         stat.topCountry.toLowerCase().includes(query)
+  //     );
+
+  //     setFilteredStats(filtered);
+  //   };
+
+  //   window.addEventListener("globalSearch", handleSearch);
+  //   return () => window.removeEventListener("globalSearch", handleSearch);
+  // }, [allStats]);
+  
 
   const chartData = Object.keys(mockData[year]).map((r) => ({
     region: r,
@@ -144,19 +185,19 @@ export default function TouristStats() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Visitors"
-          value={stats.visitors}
+          value={visibleStats.visitors}
           icon={<Users className="text-sky-500" />}
           theme={theme}
         />
         <StatCard
           title="Top Country"
-          value={stats.topCountry}
+          value={visibleStats.topCountry}
           icon={<MapPin className="text-sky-500" />}
           theme={theme}
         />
         <StatCard
           title="Revenue (Billion $)"
-          value={stats.revenue}
+          value={visibleStats.growth}
           icon={<BarChart2 className="text-sky-500" />}
           theme={theme}
         />

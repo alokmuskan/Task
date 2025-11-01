@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import { Users, MapPin, BarChart2, Globe, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useTheme } from "../context/ThemeContext"; // ✅ for dark mode
+import { useTheme } from "../context/ThemeContext";
 import { useDashboardStore } from "../store/useDashboardStore";
 
 import MyLineChart from "../components/Charts/LineChart";
@@ -18,6 +18,10 @@ export default function Dashboard() {
   const { statsData, chartData, refreshStats } = useDashboardStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // 🔍 For search filtering
+  const [filteredStats, setFilteredStats] = useState(statsData);
+  const [filteredCharts, setFilteredCharts] = useState(chartData);
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     refreshStats();
@@ -28,6 +32,51 @@ export default function Dashboard() {
     loadDashboardFromServer();
     loadAnalyticsFromServer();
   }, []);
+
+  // 🔍 Search listener (global from Topbar)
+  useEffect(() => {
+    const handleSearch = (event) => {
+      const query = event.detail.toLowerCase();
+
+      if (!query) {
+        setFilteredStats(statsData);
+        setFilteredCharts(chartData);
+        return;
+      }
+
+      // Match query with stat titles or values
+      const filteredStatObj = Object.keys(statsData)
+        .filter((key) => {
+          const value = statsData[key]?.toString().toLowerCase();
+          return key.toLowerCase().includes(query) || value.includes(query);
+        })
+        .reduce((obj, key) => {
+          obj[key] = statsData[key];
+          return obj;
+        }, {});
+
+      // Filter chart data based on key names
+      const filteredChartObj = {
+        line: chartData.line?.filter((item) =>
+          JSON.stringify(item).toLowerCase().includes(query)
+        ),
+        bar: chartData.bar?.filter((item) =>
+          JSON.stringify(item).toLowerCase().includes(query)
+        ),
+        pie: chartData.pie?.filter((item) =>
+          JSON.stringify(item).toLowerCase().includes(query)
+        ),
+      };
+
+      setFilteredStats(
+        Object.keys(filteredStatObj).length ? filteredStatObj : statsData
+      );
+      setFilteredCharts(filteredChartObj);
+    };
+
+    window.addEventListener("searchDestination", handleSearch);
+    return () => window.removeEventListener("searchDestination", handleSearch);
+  }, [statsData, chartData]);
 
   return (
     <div
@@ -43,7 +92,11 @@ export default function Dashboard() {
           <div className="flex justify-between items-center mb-10">
             <div>
               <h2 className="text-2xl font-semibold mb-1">Overview</h2>
-              <p className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+              <p
+                className={`${
+                  theme === "dark" ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
                 Key metrics and recent trends
               </p>
             </div>
@@ -53,7 +106,11 @@ export default function Dashboard() {
               onClick={handleRefresh}
               disabled={isRefreshing}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-white 
-                ${isRefreshing ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-600"}`}
+                ${
+                  isRefreshing
+                    ? "bg-sky-400 cursor-not-allowed"
+                    : "bg-sky-500 hover:bg-sky-600"
+                }`}
             >
               <RefreshCw size={18} className={isRefreshing ? "animate-spin" : ""} />
               {isRefreshing ? "Refreshing..." : "Refresh Stats"}
@@ -64,25 +121,25 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card
               title="Total Visitors"
-              value={statsData.totalVisitors.toLocaleString()}
+              value={filteredStats.totalVisitors?.toLocaleString?.() || "0"}
               icon={<Users className="text-sky-500" />}
               theme={theme}
             />
             <Card
               title="Top Destination"
-              value={statsData.topDestination}
+              value={filteredStats.topDestination || "—"}
               icon={<MapPin className="text-sky-500" />}
               theme={theme}
             />
             <Card
               title="Revenue"
-              value={`$${statsData.revenue.toLocaleString()}`}
+              value={`$${filteredStats.revenue?.toLocaleString?.() || "0"}`}
               icon={<BarChart2 className="text-sky-500" />}
               theme={theme}
             />
             <Card
               title="Active Regions"
-              value={statsData.activeRegions.toString()}
+              value={filteredStats.activeRegions?.toString?.() || "0"}
               icon={<Globe className="text-sky-500" />}
               theme={theme}
             />
@@ -107,7 +164,7 @@ export default function Dashboard() {
             >
               Visitor Growth
             </h3>
-            <MyLineChart data={chartData.line} />
+            <MyLineChart data={filteredCharts.line || chartData.line} />
           </motion.div>
 
           {/* Right Column */}
@@ -128,7 +185,7 @@ export default function Dashboard() {
               >
                 Revenue Overview
               </h3>
-              <MyBarChart data={chartData.bar} />
+              <MyBarChart data={filteredCharts.bar || chartData.bar} />
             </motion.div>
 
             {/* Pie Chart */}
@@ -147,7 +204,7 @@ export default function Dashboard() {
               >
                 Tourism Categories
               </h3>
-              <MyPieChart data={chartData.pie} />
+              <MyPieChart data={filteredCharts.pie || chartData.pie} />
             </motion.div>
           </div>
         </section>
@@ -157,7 +214,9 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-          className={`${theme === "dark" ? "bg-gray-800" : "bg-white"} rounded-2xl p-6 transition-colors duration-300`}
+          className={`${
+            theme === "dark" ? "bg-gray-800" : "bg-white"
+          } rounded-2xl p-6 transition-colors duration-300`}
         >
           <TouristStats />
           <TourismInsights />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 import {
@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import { useTheme } from "../context/ThemeContext";
 
-const performanceData = [
+const allPerformanceData = [
   { month: "Jan", visitors: 1200, revenue: 300 },
   { month: "Feb", visitors: 1800, revenue: 400 },
   { month: "Mar", visitors: 1500, revenue: 350 },
@@ -25,7 +25,7 @@ const performanceData = [
   { month: "Jun", visitors: 2500, revenue: 550 },
 ];
 
-const categoryData = [
+const allCategoryData = [
   { name: "Adventure", value: 32 },
   { name: "Cultural", value: 25 },
   { name: "Wildlife", value: 18 },
@@ -36,9 +36,12 @@ const COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#f87171"];
 
 export default function TourismInsights() {
   const { theme } = useTheme();
-
-  // theme-aware colors for charts/tooltips
   const isDark = theme === "dark";
+
+  const [performanceData, setPerformanceData] = useState(allPerformanceData);
+  const [categoryData, setCategoryData] = useState(allCategoryData);
+
+  // theme-aware colors
   const cardBg = isDark ? "dark:bg-gray-800 bg-white" : "bg-white";
   const border = isDark ? "dark:border-gray-700 border-gray-200" : "border-gray-200";
   const textPrimary = isDark ? "dark:text-gray-100 text-gray-800" : "text-gray-800";
@@ -55,6 +58,34 @@ export default function TourismInsights() {
     { title: "Conversion Rate", value: 3.6, suffix: "%" },
     { title: "Satisfaction", value: 88, suffix: "%" },
   ];
+
+  // 🔍 Handle global search event
+  useEffect(() => {
+    const handleSearch = (event) => {
+      const query = event.detail.toLowerCase();
+
+      if (!query) {
+        setPerformanceData(allPerformanceData);
+        setCategoryData(allCategoryData);
+        return;
+      }
+
+      // Filter chart data based on month or category
+      const filteredPerf = allPerformanceData.filter((item) =>
+        item.month.toLowerCase().includes(query)
+      );
+      const filteredCat = allCategoryData.filter((item) =>
+        item.name.toLowerCase().includes(query)
+      );
+
+      // Show results if found, else keep everything
+      setPerformanceData(filteredPerf.length ? filteredPerf : allPerformanceData);
+      setCategoryData(filteredCat.length ? filteredCat : allCategoryData);
+    };
+
+    window.addEventListener("globalSearch", handleSearch);
+    return () => window.removeEventListener("globalSearch", handleSearch);
+  }, []);
 
   return (
     <motion.div
@@ -73,7 +104,9 @@ export default function TourismInsights() {
           transition={{ duration: 0.6 }}
           whileHover={{ translateY: -4 }}
         >
-          <h3 className={`text-lg font-semibold mb-4 ${textPrimary}`}>Monthly Tourism Performance</h3>
+          <h3 className={`text-lg font-semibold mb-4 ${textPrimary}`}>
+            Monthly Tourism Performance
+          </h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={performanceData} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
@@ -102,7 +135,9 @@ export default function TourismInsights() {
           transition={{ duration: 0.6, delay: 0.05 }}
           whileHover={{ translateY: -4 }}
         >
-          <h3 className={`text-lg font-semibold mb-4 ${textPrimary}`}>Tourism Category Distribution</h3>
+          <h3 className={`text-lg font-semibold mb-4 ${textPrimary}`}>
+            Tourism Category Distribution
+          </h3>
           <div className="h-72 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -153,9 +188,25 @@ export default function TourismInsights() {
               </h4>
             </div>
 
-            <div className={`w-10 h-10 rounded-full ${isDark ? "bg-sky-900" : "bg-sky-50"} flex items-center justify-center`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={`${isDark ? "text-sky-400" : "text-sky-500"}`}>
-                <path d="M12 2v10l3-2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <div
+              className={`w-10 h-10 rounded-full ${
+                isDark ? "bg-sky-900" : "bg-sky-50"
+              } flex items-center justify-center`}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                className={`${isDark ? "text-sky-400" : "text-sky-500"}`}
+              >
+                <path
+                  d="M12 2v10l3-2"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </div>
           </motion.div>
