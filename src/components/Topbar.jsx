@@ -170,7 +170,7 @@ export default function Topbar() {
   // ========== COMPONENT RENDER ==========
   return (
     <header
-      className={`flex items-center justify-between border-b px-6 py-4 sticky top-0 z-50 shadow-sm transition-colors duration-300
+      className={`flex items-center justify-between border-b px-8 py-4 sticky top-0 z-50 shadow-sm transition-colors duration-300
         ${
           theme === "dark"
             ? "bg-gray-900 border-gray-800 text-gray-100"
@@ -179,7 +179,7 @@ export default function Topbar() {
     >
       {/* ========== SEARCH BAR ========== */}
       <div
-        className={`flex items-center w-1/3 rounded-xl px-3 py-2 border focus-within:ring-2 transition-all duration-200 relative
+        className={`flex items-center w-1/3 min-w-[300px] rounded-xl px-4 py-2.5 border focus-within:ring-2 transition-all duration-200 relative
           ${
             theme === "dark"
               ? "bg-gray-800 border-gray-700 text-gray-200 focus-within:ring-sky-600"
@@ -188,8 +188,8 @@ export default function Topbar() {
       >
         {/* Search Icon */}
         <Search
-          size={18}
-          className={`mr-2 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
+          size={20}
+          className={`mr-3 flex-shrink-0 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
         />
         
         {/* Search Input Field */}
@@ -198,7 +198,7 @@ export default function Topbar() {
           value={query}
           onChange={handleSearchChange}
           placeholder="Search destinations, metrics..."
-          className={`bg-transparent w-full outline-none placeholder:text-gray-400 ${
+          className={`bg-transparent w-full outline-none placeholder:text-gray-400 text-sm ${
             theme === "dark" ? "text-gray-100" : "text-gray-700"
           }`}
         />
@@ -207,16 +207,18 @@ export default function Topbar() {
         {query && (
           <button
             onClick={handleClearSearch}
-            className="absolute right-3 text-gray-400 hover:text-gray-600 transition"
+            className={`absolute right-3 transition hover:scale-110 ${
+              theme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
+            }`}
             aria-label="Clear search"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         )}
       </div>
 
       {/* ========== ACTION BUTTONS (Export / Refresh / Theme) ========== */}
-      <div className="flex gap-3 relative">
+      <div className="flex items-center gap-30">
         
         {/* ===== EXPORT BUTTON WITH DROPDOWN ===== */}
         <div className="relative">
@@ -224,23 +226,23 @@ export default function Topbar() {
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
             disabled={isExporting} // Disable while exporting
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
               ${
                 isExporting
                   ? "opacity-50 cursor-not-allowed" // Dimmed when loading
                   : theme === "dark"
-                  ? "bg-sky-700 hover:bg-sky-600 text-white"
-                  : "bg-sky-500 hover:bg-sky-600 text-white"
+                  ? "bg-sky-700 hover:bg-sky-600 hover:shadow-lg text-white"
+                  : "bg-sky-500 hover:bg-sky-600 hover:shadow-lg text-white"
               }`}
           >
-            <Download size={16} />
-            {isExporting ? "Exporting..." : "Export"}
+            <Download size={18} className="flex-shrink-0" />
+            <span>{isExporting ? "Exporting..." : "Export"}</span>
           </button>
 
           {/* Export Dropdown Menu - Shows PDF and Image options */}
           {showExportMenu && (
             <div
-              className={`absolute top-full mt-2 right-0 rounded-xl shadow-lg border overflow-hidden z-50 min-w-[160px]
+              className={`absolute top-full mt-2 right-0 rounded-xl shadow-xl border overflow-hidden z-50 min-w-[180px]
                 ${
                   theme === "dark"
                     ? "bg-gray-800 border-gray-700"
@@ -250,28 +252,28 @@ export default function Topbar() {
               {/* Export as PDF Option */}
               <button
                 onClick={exportToPDF}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors
                   ${
                     theme === "dark"
                       ? "hover:bg-gray-700 text-gray-200"
                       : "hover:bg-gray-50 text-gray-700"
                   }`}
               >
-                <FileText size={16} className="text-red-500" />
+                <FileText size={18} className="text-red-500 flex-shrink-0" />
                 <span className="text-sm font-medium">Export as PDF</span>
               </button>
               
               {/* Export as Image Option */}
               <button
                 onClick={exportToImage}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors
                   ${
                     theme === "dark"
                       ? "hover:bg-gray-700 text-gray-200"
                       : "hover:bg-gray-50 text-gray-700"
                   }`}
               >
-                <ImageIcon size={16} className="text-blue-500" />
+                <ImageIcon size={18} className="text-blue-500 flex-shrink-0" />
                 <span className="text-sm font-medium">Export as Image</span>
               </button>
             </div>
@@ -279,54 +281,62 @@ export default function Topbar() {
         </div>
 
         {/* ===== REFRESH BUTTON ===== */}
-        <button
-          className={`px-4 py-2 rounded-xl transition
+        {/* <button
+          className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all
             ${
               theme === "dark"
-                ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-gray-800 text-gray-200 hover:bg-gray-700 border border-gray-700"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
             }`}
         >
           Refresh
-        </button>
+        </button> */}
         
         {/* ===== THEME TOGGLE BUTTON ===== */}
         <button
           onClick={handleThemeToggle}
-          className={`p-2 rounded-md transition ${
-            theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+          className={`p-2.5 rounded-xl transition-all ${
+            theme === "dark" 
+              ? "hover:bg-gray-800 border border-gray-700" 
+              : "hover:bg-gray-100 border border-gray-200"
           }`}
           aria-label="Toggle theme"
         >
           {/* Show Sun icon in dark mode, Moon icon in light mode */}
           {theme === "dark" ? (
-            <Sun size={18} className="text-yellow-400" />
+            <Sun size={20} className="text-yellow-400" />
           ) : (
-            <Moon size={18} className="text-gray-600" />
+            <Moon size={20} className="text-gray-600" />
           )}
         </button>
       </div>
 
       {/* ========== NOTIFICATIONS & PROFILE ========== */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-8">
         {/* Notification Bell */}
         <button
-          className={`p-2 rounded-md transition ${
-            theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+          className={`p-2.5 rounded-xl transition-all relative ${
+            theme === "dark" 
+              ? "hover:bg-gray-800 border border-gray-700" 
+              : "hover:bg-gray-100 border border-gray-200"
           }`}
           aria-label="Notifications"
         >
           <Bell
-            size={18}
+            size={20}
             className={`${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}
           />
+          {/* Notification Badge (optional) */}
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
 
         {/* User Profile Section */}
-        <div className="flex items-center gap-3">
+        <div className={`flex items-center gap-5 pl-4 border-l ${
+          theme === "dark" ? "border-gray-700" : "border-gray-200"
+        }`}>
           {/* Avatar with initials */}
           <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold 
+            className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm
               ${
                 theme === "dark"
                   ? "bg-sky-700 text-white"
@@ -336,22 +346,27 @@ export default function Topbar() {
             AR
           </div>
           
-          {/* Admin label (hidden on small screens) */}
-          <span
-            className={`hidden sm:inline text-sm font-medium ${
-              theme === "dark" ? "text-gray-100" : "text-gray-800"
-            }`}
-          >
-            Admin
-          </span>
-          
-          {/* User icon (hidden on small screens) */}
-          <User
-            size={18}
-            className={`hidden sm:inline ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
-            }`}
-          />
+          {/* Admin label and icon (hidden on small screens) */}
+          <div className="hidden sm:flex items-center gap-5">
+            <div className="flex flex-col">
+              <span className={`text-sm font-semibold ${
+                theme === "dark" ? "text-gray-100" : "text-gray-800"
+              }`}>
+                Admin
+              </span>
+              <span className={`text-xs ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}>
+                Super Admin
+              </span>
+            </div>
+            <User
+              size={20}
+              className={`${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
+          </div>
         </div>
       </div>
 
