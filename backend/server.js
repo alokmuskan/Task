@@ -21,7 +21,7 @@ app.use(express.json());
 
 // Health check route
 app.get("/", (req, res) => {
-  res.json({ message: "Tourism Analytics API is running! 🚀" });
+  res.json({ message: "Tourism Analytics API is running!" });
 });
 
 // Register all routes
@@ -39,8 +39,8 @@ app.use((err, req, res, next) => {
 // Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 API Endpoints:`);
+  console.log(`   Server running on port ${PORT}`);
+  console.log(`   API Endpoints:`);
   console.log(`   GET  http://localhost:${PORT}/api/dashboard`);
   console.log(`   POST http://localhost:${PORT}/api/dashboard/refresh`);
   console.log(`   GET  http://localhost:${PORT}/api/analytics`);

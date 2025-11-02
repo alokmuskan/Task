@@ -46,7 +46,7 @@ export default function TouristStats() {
   const [stats, setStats] = useState(mockData[year][region]);
   const { theme } = useTheme();
 
-  // ✅ Combine all stats into one array for searching
+  //  Combine all stats into one array for searching
   const allStats = Object.entries(mockData).flatMap(([year, regions]) =>
     Object.entries(regions).map(([region, data]) => ({
       year,
@@ -57,7 +57,7 @@ export default function TouristStats() {
 
   const [filteredStats, setFilteredStats] = useState(allStats);
 
-  // ✅ FIX: Use stats state directly instead of visibleStats
+  //  FIX: Use stats state directly instead of visibleStats
   const visibleStats = stats;
 
   const handleRefresh = () => {
@@ -65,7 +65,7 @@ export default function TouristStats() {
     setTimeout(() => {
       const randomOffset = Math.random() * 0.2 + 0.9;
       
-      // ✅ FIX: Array of countries to randomly select from
+      //  FIX: Array of countries to randomly select from
       const countries = {
         Asia: ["India", "Japan", "Thailand", "China", "South Korea", "Singapore"],
         Europe: ["France", "Italy", "Spain", "Germany", "Greece", "Portugal"],
@@ -76,7 +76,7 @@ export default function TouristStats() {
       
       const newStats = {
         visitors: Math.floor(stats.visitors * randomOffset),
-        topCountry: randomCountry, // ✅ Now changes randomly
+        topCountry: randomCountry, //  Now changes randomly
         revenue: parseFloat((stats.revenue * randomOffset).toFixed(1)),
         growth: parseFloat((stats.growth * randomOffset).toFixed(1)),
       };
@@ -93,7 +93,7 @@ export default function TouristStats() {
     setStats(mockData[selectedYear][selectedRegion]);
   };
 
-  // ✅ Listen to global search event
+  //  Listen to global search event
   // useEffect(() => {
   //   const handleSearch = (event) => {
   //     const query = event.detail.toLowerCase();
@@ -189,7 +189,7 @@ export default function TouristStats() {
         </div>
       </div>
 
-      {/* Stats Cards - ✅ FIX: Use stats directly and add unique keys */}
+      {/* Stats Cards -  FIX: Use stats directly and add unique keys */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Visitors"

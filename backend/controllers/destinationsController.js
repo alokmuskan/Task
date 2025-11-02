@@ -52,7 +52,7 @@ export const getAllDestinations = async (req, res) => {
       ];
 
       destinations = await Destination.insertMany(mockDestinations);
-      console.log("✅ Initial destinations created in MongoDB");
+      console.log(" Initial destinations created in MongoDB");
     }
 
     // Return in your existing format

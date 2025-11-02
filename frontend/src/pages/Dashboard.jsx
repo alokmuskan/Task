@@ -78,7 +78,7 @@ export default function Dashboard() {
     return () => window.removeEventListener("searchDestination", handleSearch);
   }, [statsData, chartData]);
 
-  // ✅ FIX: Update filteredStats whenever statsData or chartData changes
+  //  FIX: Update filteredStats whenever statsData or chartData changes
   useEffect(() => {
     setFilteredStats(statsData);
     setFilteredCharts(chartData);

@@ -18,7 +18,7 @@ export const getSettings = async (req, res) => {
         language: "en",
         currency: "USD"
       });
-      console.log("✅ Initial settings created in MongoDB");
+      console.log("Initial settings created in MongoDB");
     }
 
     // Return in your existing format
@@ -54,7 +54,7 @@ export const updateSettings = async (req, res) => {
       }
     );
 
-    console.log("✅ Updated Settings:", settings);
+    console.log(" Updated Settings:", settings);
 
     res.status(200).json({
       message: "Settings updated successfully",

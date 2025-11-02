@@ -13,7 +13,7 @@ export function ThemeProvider({ children }) {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // ✅ toggleTheme now just switches the state
+  //  toggleTheme now just switches the state
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };

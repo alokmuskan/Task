@@ -23,7 +23,7 @@ export default function Settings() {
     fetchSettings();
   }, []);
 
-  // ✅ Sync theme changes when context updates
+  //  Sync theme changes when context updates
   useEffect(() => {
     if (settings && theme !== settings.theme) {
       setSettings((prev) => ({ ...prev, theme }));
@@ -38,7 +38,7 @@ export default function Settings() {
     };
     setSettings(newSettings);
 
-    // ✅ Update global theme dynamically
+    //  Update global theme dynamically
     if (name === "theme") {
       setTheme(value);
     }

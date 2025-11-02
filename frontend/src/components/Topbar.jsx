@@ -109,9 +109,9 @@ export default function Topbar() {
       const timestamp = new Date().toISOString().slice(0, 10);
       pdf.save(`tourism-dashboard-${timestamp}.pdf`);
       
-      console.log("✅ PDF exported successfully!");
+      console.log(" PDF exported successfully!");
     } catch (error) {
-      console.error("❌ Error exporting to PDF:", error);
+      console.error(" Error exporting to PDF:", error);
       alert("Failed to export PDF. Please try again.");
     } finally {
       setIsExporting(false); // Reset loading state
@@ -158,9 +158,9 @@ export default function Topbar() {
       
       // Clean up: revoke the temporary URL to free memory
       URL.revokeObjectURL(url);
-      console.log("✅ Image exported successfully!");
+      console.log(" Image exported successfully!");
     } catch (error) {
-      console.error("❌ Error exporting to image:", error);
+      console.error(" Error exporting to image:", error);
       alert("Failed to export image. Please try again.");
     } finally {
       setIsExporting(false); // Reset loading state
