@@ -2,8 +2,8 @@ import { Search, Bell, User, Sun, Moon, X, Download, FileText, Image as ImageIco
 import { useTheme } from "../context/ThemeContext";
 import { useState } from "react";
 import { useSearch } from "../context/SearchContext";
-import html2canvas from "html2canvas"; // Library to capture DOM elements as images
-import jsPDF from "jspdf"; // Library to generate PDF files
+import domtoimage from "dom-to-image"; // Better library for modern CSS
+import jsPDF from "jspdf";
 
 export default function Topbar() {
   // ========== STATE MANAGEMENT ==========
@@ -55,14 +55,14 @@ export default function Topbar() {
     window.dispatchEvent(new CustomEvent("searchDestination", { detail: "" })); // Reset filters
   };
 
-  // ========== EXPORT TO PDF HANDLER ==========
+  // ========== EXPORT TO PDF HANDLER (Using dom-to-image) ==========
   /**
-   * Exports the dashboard to a PDF file
+   * Exports the dashboard to a PDF file using dom-to-image library
+   * This library handles modern CSS (oklch, color-mix, etc.) much better
    * Process:
-   * 1. Captures the main content area as a canvas (screenshot)
-   * 2. Converts canvas to image data
-   * 3. Creates a PDF document with the image
-   * 4. Auto-downloads the PDF with timestamp in filename
+   * 1. Captures the main content area as PNG data URL
+   * 2. Creates a PDF document with the image
+   * 3. Auto-downloads the PDF with timestamp in filename
    */
   const exportToPDF = async () => {
     setIsExporting(true); // Show loading state
@@ -70,31 +70,43 @@ export default function Topbar() {
     
     try {
       // Step 1: Select the main content area (excludes sidebar and topbar)
-      const element = document.querySelector("main") || document.body;
+      const element = document.querySelector("main");
       
-      // Step 2: Capture the element as a high-quality canvas
-      const canvas = await html2canvas(element, {
-        scale: 2, // 2x resolution for better quality
-        useCORS: true, // Allow cross-origin images
-        logging: false, // Disable console logs
-        backgroundColor: theme === "dark" ? "#111827" : "#ffffff", // Match theme background
+      if (!element) {
+        throw new Error("Main content not found");
+      }
+
+      // Step 2: Convert the element to a PNG image using dom-to-image
+      // This library handles modern CSS functions like oklch() properly
+      const dataUrl = await domtoimage.toPng(element, {
+        quality: 0.95, // High quality image
+        bgcolor: theme === "dark" ? "#111827" : "#ffffff", // Match theme background
+        style: {
+          transform: "scale(1)", // Ensure no scaling issues
+          transformOrigin: "top left"
+        }
       });
 
-      // Step 3: Convert canvas to PNG image data
-      const imgData = canvas.toDataURL("image/png");
+      // Step 3: Create an image object to get dimensions
+      const img = new Image();
+      img.src = dataUrl;
       
-      // Step 4: Create PDF with dimensions matching the canvas
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
+      // Step 4: Create PDF with proper dimensions
       const pdf = new jsPDF({
-        orientation: canvas.width > canvas.height ? "landscape" : "portrait", // Auto-detect orientation
-        unit: "px", // Use pixels as unit
-        format: [canvas.width, canvas.height], // Match canvas dimensions
+        orientation: img.width > img.height ? "landscape" : "portrait",
+        unit: "px",
+        format: [img.width, img.height]
       });
 
-      // Step 5: Add the captured image to PDF
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      // Step 5: Add the image to PDF
+      pdf.addImage(dataUrl, "PNG", 0, 0, img.width, img.height);
       
       // Step 6: Download PDF with timestamp (e.g., tourism-dashboard-2025-11-02.pdf)
-      const timestamp = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+      const timestamp = new Date().toISOString().slice(0, 10);
       pdf.save(`tourism-dashboard-${timestamp}.pdf`);
       
       console.log("✅ PDF exported successfully!");
@@ -106,14 +118,13 @@ export default function Topbar() {
     }
   };
 
-  // ========== EXPORT TO IMAGE HANDLER ==========
+  // ========== EXPORT TO IMAGE HANDLER (Using dom-to-image) ==========
   /**
-   * Exports the dashboard to a PNG image file
+   * Exports the dashboard to a PNG image file using dom-to-image
    * Process:
-   * 1. Captures the main content area as a canvas
-   * 2. Converts canvas to a blob (binary data)
-   * 3. Creates a download link and triggers download
-   * 4. Auto-downloads the image with timestamp in filename
+   * 1. Converts the main content to a blob (binary image data)
+   * 2. Creates a download link and triggers download
+   * 3. Auto-downloads the image with timestamp in filename
    */
   const exportToImage = async () => {
     setIsExporting(true); // Show loading state
@@ -121,32 +132,33 @@ export default function Topbar() {
     
     try {
       // Step 1: Select the main content area
-      const element = document.querySelector("main") || document.body;
+      const element = document.querySelector("main");
       
-      // Step 2: Capture the element as a high-quality canvas
-      const canvas = await html2canvas(element, {
-        scale: 2, // 2x resolution for crisp images
-        useCORS: true, // Allow cross-origin images
-        logging: false, // Disable console logs
-        backgroundColor: theme === "dark" ? "#111827" : "#ffffff", // Match theme background
+      if (!element) {
+        throw new Error("Main content not found");
+      }
+
+      // Step 2: Convert element to blob using dom-to-image
+      const blob = await domtoimage.toBlob(element, {
+        quality: 0.95, // High quality
+        bgcolor: theme === "dark" ? "#111827" : "#ffffff", // Match theme
+        style: {
+          transform: "scale(1)",
+          transformOrigin: "top left"
+        }
       });
 
-      // Step 3: Convert canvas to blob and trigger download
-      canvas.toBlob((blob) => {
-        // Create a temporary URL for the blob
-        const url = URL.createObjectURL(blob);
-        
-        // Create a hidden download link
-        const link = document.createElement("a");
-        const timestamp = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
-        link.download = `tourism-dashboard-${timestamp}.png`; // Set filename
-        link.href = url; // Set download URL
-        link.click(); // Trigger download
-        
-        // Clean up: revoke the temporary URL to free memory
-        URL.revokeObjectURL(url);
-        console.log("✅ Image exported successfully!");
-      });
+      // Step 3: Create download link and trigger download
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const timestamp = new Date().toISOString().slice(0, 10);
+      link.download = `tourism-dashboard-${timestamp}.png`;
+      link.href = url;
+      link.click();
+      
+      // Clean up: revoke the temporary URL to free memory
+      URL.revokeObjectURL(url);
+      console.log("✅ Image exported successfully!");
     } catch (error) {
       console.error("❌ Error exporting to image:", error);
       alert("Failed to export image. Please try again.");
