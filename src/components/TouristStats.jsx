@@ -64,9 +64,19 @@ export default function TouristStats() {
     setIsRefreshing(true);
     setTimeout(() => {
       const randomOffset = Math.random() * 0.2 + 0.9;
+      
+      // ✅ FIX: Array of countries to randomly select from
+      const countries = {
+        Asia: ["India", "Japan", "Thailand", "China", "South Korea", "Singapore"],
+        Europe: ["France", "Italy", "Spain", "Germany", "Greece", "Portugal"],
+        America: ["USA", "Mexico", "Brazil", "Canada", "Argentina", "Chile"]
+      };
+      
+      const randomCountry = countries[region][Math.floor(Math.random() * countries[region].length)];
+      
       const newStats = {
         visitors: Math.floor(stats.visitors * randomOffset),
-        topCountry: stats.topCountry,
+        topCountry: randomCountry, // ✅ Now changes randomly
         revenue: parseFloat((stats.revenue * randomOffset).toFixed(1)),
         growth: parseFloat((stats.growth * randomOffset).toFixed(1)),
       };
@@ -284,13 +294,19 @@ function StatCard({ title, value, icon, suffix = "", theme }) {
         >
           {title}
         </p>
-        <h4 className="text-2xl font-semibold">
+        <motion.h4 
+          className="text-2xl font-semibold"
+          key={value}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           {isNumeric ? (
             <CountUp end={value} duration={2} separator="," suffix={suffix} />
           ) : (
             value
           )}
-        </h4>
+        </motion.h4>
       </div>
       {icon}
     </motion.div>
