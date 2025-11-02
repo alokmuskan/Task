@@ -13,8 +13,12 @@ export default function Sidebar() {
     `flex items-center gap-3 w-full text-left p-3 rounded-xl transition-all duration-200
      ${
        isActive
-         ? "bg-sky-700 text-white font-semibold shadow-sm"
-         : "text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-gray-800"
+         ? theme === "dark"
+           ? "bg-sky-700 text-white font-semibold shadow-sm"
+           : "bg-sky-500 text-white font-semibold shadow-sm"
+         : theme === "dark"
+         ? "text-gray-300 hover:text-sky-400 hover:bg-gray-800"
+         : "text-gray-800 hover:text-sky-600 hover:bg-sky-50"
      }`;
 
   return (
@@ -22,12 +26,16 @@ export default function Sidebar() {
       {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 md:hidden z-[100] p-2 rounded-lg bg-sky-600 text-white shadow-md focus:outline-none"
-        style={{ marginLeft: '0.5rem' }} // optional alignment tweak
+        className={`fixed top-4 left-4 md:hidden z-[100] p-2 rounded-lg text-white shadow-md focus:outline-none transition-colors
+          ${
+            theme === "dark"
+              ? "bg-sky-700 hover:bg-sky-600"
+              : "bg-sky-500 hover:bg-sky-600"
+          }`}
+        style={{ marginLeft: '0.5rem' }}
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
-
 
       {/* Sidebar */}
       <aside
@@ -42,10 +50,12 @@ export default function Sidebar() {
       >
         <div>
           {/* Brand */}
-          <h1 className="text-2xl font-bold text-sky-600 mb-1">TourismDash</h1>
+          <h1 className={`text-2xl font-bold mb-1 ${
+            theme === "dark" ? "text-sky-400" : "text-sky-500"
+          }`}>TourismDash</h1>
           <p
             className={`text-sm mb-8 ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
             }`}
           >
             Analytics & insights
@@ -74,7 +84,7 @@ export default function Sidebar() {
         {/* Footer */}
         <div
           className={`text-sm text-center ${
-            theme === "dark" ? "text-gray-500" : "text-gray-400"
+            theme === "dark" ? "text-gray-500" : "text-gray-500"
           }`}
         >
           © 2025 TourismDash
