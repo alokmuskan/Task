@@ -1,38 +1,81 @@
 // backend/controllers/dashboardController.js
+import Dashboard from "../models/Dashboard.js";
+
+// Get Dashboard Data
 export const getDashboardData = async (req, res) => {
   try {
-    const statsData = {
-      totalVisitors: 24320,
-      topDestination: "Bihar",
-      revenue: 52430,
-      activeRegions: 18,
-    };
+    let dashboard = await Dashboard.findOne();
+    
+    // If no data exists, create initial mock data
+    if (!dashboard) {
+      dashboard = await Dashboard.create({
+        statsData: {
+          totalVisitors: 125847,
+          topDestination: "Paris",
+          revenue: 2450000,
+          activeRegions: 24
+        },
+        chartData: {
+          line: [
+            { month: "Jan", visitors: 8500 },
+            { month: "Feb", visitors: 9200 },
+            { month: "Mar", visitors: 10500 },
+            { month: "Apr", visitors: 12000 },
+            { month: "May", visitors: 14200 },
+            { month: "Jun", visitors: 16500 }
+          ],
+          bar: [
+            { month: "Jan", revenue: 145000 },
+            { month: "Feb", revenue: 168000 },
+            { month: "Mar", revenue: 192000 },
+            { month: "Apr", revenue: 215000 },
+            { month: "May", revenue: 240000 },
+            { month: "Jun", revenue: 268000 }
+          ],
+          pie: [
+            { name: "Adventure", value: 450 },
+            { name: "Beach", value: 320 },
+            { name: "Cultural", value: 280 },
+            { name: "Wildlife", value: 150 }
+          ]
+        }
+      });
+    }
 
-    const chartData = {
-      line: [
-        { date: "Jan", value: 120 }, { date: "Feb", value: 200 }, { date: "Mar", value: 180 },
-        { date: "Apr", value: 260 }, { date: "May", value: 300 }, { date: "Jun", value: 350 },
-        { date: "Jul", value: 420 }, { date: "Aug", value: 460 }, { date: "Sep", value: 500 },
-        { date: "Oct", value: 550 }, { date: "Nov", value: 600 }, { date: "Dec", value: 650 },
-      ],
-      bar: [
-        { month: "Jan", revenue: 4000 },
-        { month: "Feb", revenue: 3000 },
-        { month: "Mar", revenue: 5000 },
-        { month: "Apr", revenue: 4500 },
-        { month: "May", revenue: 6000 },
-      ],
-      pie: [
-        { name: "Beaches", value: 400 },
-        { name: "Mountains", value: 300 },
-        { name: "Historical Sites", value: 300 },
-        { name: "Adventure Sports", value: 200 },
-      ],
-    };
-
-    res.status(200).json({ statsData, chartData });
+    res.status(200).json(dashboard);
   } catch (err) {
     console.error("Error in getDashboardData:", err);
     res.status(500).json({ error: "Failed to fetch dashboard data" });
+  }
+};
+
+// Refresh Dashboard Stats (generates new random data)
+export const refreshDashboardStats = async (req, res) => {
+  try {
+    const randomVisitors = Math.floor(Math.random() * 50000) + 100000;
+    const randomRevenue = Math.floor(Math.random() * 1000000) + 2000000;
+    const randomRegions = Math.floor(Math.random() * 10) + 20;
+    
+    const destinations = ["Paris", "Tokyo", "New York", "London", "Dubai", "Barcelona"];
+    const randomDestination = destinations[Math.floor(Math.random() * destinations.length)];
+
+    const updated = await Dashboard.findOneAndUpdate(
+      {},
+      {
+        statsData: {
+          totalVisitors: randomVisitors,
+          topDestination: randomDestination,
+          revenue: randomRevenue,
+          activeRegions: randomRegions
+        },
+        updatedAt: Date.now()
+      },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error("Error in refreshDashboardStats:", err);
+    res.status(500).json({ error: "Failed to refresh dashboard stats" });
   }
 };
