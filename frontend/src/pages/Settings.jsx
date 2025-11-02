@@ -12,7 +12,7 @@ export default function Settings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const { data } = await api.get("/api/settings");
+        const { data } = await api.get("/settings");
         setSettings(data.settings);
       } catch (err) {
         console.error("Error fetching settings:", err);

@@ -59,8 +59,8 @@ export const useDashboardStore = create((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-        // Call backend refresh endpoint
-        const { data } = await api.post("/api/dashboard/refresh");
+  // Call backend refresh endpoint
+  const { data } = await api.post("/dashboard/refresh");
         
         if (data?.statsData) {
           set({ 
@@ -146,7 +146,7 @@ export const useDashboardStore = create((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-        const { data } = await api.get("/api/dashboard");
+  const { data } = await api.get("/dashboard");
         
         if (data?.statsData || data?.chartData) {
           // Transform backend data to match your format if needed
@@ -182,7 +182,7 @@ export const useDashboardStore = create((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-        const { data } = await api.get("/api/analytics");
+  const { data } = await api.get("/analytics");
 
         if (data?.analytics?.monthlyStats) {
           // Transform analytics data to your line chart format

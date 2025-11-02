@@ -32,7 +32,7 @@ export default function Analytics() {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const { data } = await api.get("/api/analytics");
+  const { data } = await api.get("/analytics");
         setAnalytics(data.analytics || {});
         setFilteredAnalytics(data.analytics || {});
       } catch (err) {

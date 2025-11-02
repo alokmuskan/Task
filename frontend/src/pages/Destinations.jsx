@@ -15,7 +15,7 @@ export default function Destinations() {
   useEffect(() => {
     const fetchDestinations = async () => {
       try {
-        const { data } = await api.get("/api/destinations");
+        const { data } = await api.get("/destinations");
         const dests = data.destinations || [];
         setDestinations(dests);
         setFiltered(dests);
