@@ -78,6 +78,12 @@ export default function Dashboard() {
     return () => window.removeEventListener("searchDestination", handleSearch);
   }, [statsData, chartData]);
 
+  // ✅ FIX: Update filteredStats whenever statsData or chartData changes
+  useEffect(() => {
+    setFilteredStats(statsData);
+    setFilteredCharts(chartData);
+  }, [statsData, chartData]);
+
   return (
     <div
       className={`flex min-h-screen transition-colors duration-300 ${
@@ -124,24 +130,28 @@ export default function Dashboard() {
               value={filteredStats.totalVisitors?.toLocaleString?.() || "0"}
               icon={<Users className="text-sky-500" />}
               theme={theme}
+              key={`visitors-${filteredStats.totalVisitors}`}
             />
             <Card
               title="Top Destination"
               value={filteredStats.topDestination || "—"}
               icon={<MapPin className="text-sky-500" />}
               theme={theme}
+              key={`destination-${filteredStats.topDestination}`}
             />
             <Card
               title="Revenue"
               value={`$${filteredStats.revenue?.toLocaleString?.() || "0"}`}
               icon={<BarChart2 className="text-sky-500" />}
               theme={theme}
+              key={`revenue-${filteredStats.revenue}`}
             />
             <Card
               title="Active Regions"
               value={filteredStats.activeRegions?.toString?.() || "0"}
               icon={<Globe className="text-sky-500" />}
               theme={theme}
+              key={`regions-${filteredStats.activeRegions}`}
             />
           </div>
         </section>
@@ -249,7 +259,7 @@ function Card({ title, value, icon, theme }) {
           ) : (
             <>
               {value.includes("$") && "$"}
-              <CountUp key={numericValue} end={numericValue} duration={2.5} separator="," />
+              <CountUp end={numericValue} duration={2.5} separator="," />
             </>
           )}
         </h4>

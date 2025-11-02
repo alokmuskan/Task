@@ -57,10 +57,8 @@ export default function TouristStats() {
 
   const [filteredStats, setFilteredStats] = useState(allStats);
 
-  // derived stats for currently selected region/year (will change on search)
-  const visibleStats =
-  filteredStats.find((s) => s.year === year && s.region === region) ||
-  mockData[year][region];
+  // ✅ FIX: Use stats state directly instead of visibleStats
+  const visibleStats = stats;
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -181,25 +179,28 @@ export default function TouristStats() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - ✅ FIX: Use stats directly and add unique keys */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Visitors"
-          value={visibleStats.visitors}
+          value={stats.visitors}
           icon={<Users className="text-sky-500" />}
           theme={theme}
+          key={`visitors-${stats.visitors}`}
         />
         <StatCard
           title="Top Country"
-          value={visibleStats.topCountry}
+          value={stats.topCountry}
           icon={<MapPin className="text-sky-500" />}
           theme={theme}
+          key={`country-${stats.topCountry}`}
         />
         <StatCard
           title="Revenue (Billion $)"
-          value={visibleStats.growth}
+          value={stats.revenue}
           icon={<BarChart2 className="text-sky-500" />}
           theme={theme}
+          key={`revenue-${stats.revenue}`}
         />
         <StatCard
           title="Growth Rate (%)"
@@ -207,6 +208,7 @@ export default function TouristStats() {
           icon={<TrendingUp className="text-sky-500" />}
           suffix="%"
           theme={theme}
+          key={`growth-${stats.growth}`}
         />
       </div>
 
