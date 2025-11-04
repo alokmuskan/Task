@@ -16,6 +16,7 @@ export const getAllDestinations = async (req, res) => {
           rating: 4.7,
           category: "Cultural",
           description: "The Pink City with magnificent palaces and forts",
+          
           popularMonths: ["Oct", "Nov", "Dec"],
           averageStay: 3
         },

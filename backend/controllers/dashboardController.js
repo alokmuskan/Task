@@ -49,9 +49,10 @@ export const getDashboardData = async (req, res) => {
   }
 };
 
-// Refresh Dashboard Stats (generates new random data)
+// Refresh Dashboard Stats (generates new random data for BOTH stats AND charts)
 export const refreshDashboardStats = async (req, res) => {
   try {
+    // Generate random stats
     const randomVisitors = Math.floor(Math.random() * 50000) + 100000;
     const randomRevenue = Math.floor(Math.random() * 1000000) + 2000000;
     const randomRegions = Math.floor(Math.random() * 10) + 20;
@@ -59,6 +60,26 @@ export const refreshDashboardStats = async (req, res) => {
     const destinations = ["Paris", "Tokyo", "New York", "London", "Dubai", "Barcelona"];
     const randomDestination = destinations[Math.floor(Math.random() * destinations.length)];
 
+    // Generate random chart data
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    
+    const newLineData = months.map((month) => ({
+      month,
+      visitors: Math.floor(Math.random() * 10000) + 5000
+    }));
+
+    const newBarData = months.map((month) => ({
+      month,
+      revenue: Math.floor(Math.random() * 100000) + 100000
+    }));
+
+    const categories = ["Adventure", "Beach", "Cultural", "Wildlife"];
+    const newPieData = categories.map((name) => ({
+      name,
+      value: Math.floor(Math.random() * 350) + 150
+    }));
+
+    // Update MongoDB with new stats AND charts
     const updated = await Dashboard.findOneAndUpdate(
       {},
       {
@@ -67,6 +88,11 @@ export const refreshDashboardStats = async (req, res) => {
           topDestination: randomDestination,
           revenue: randomRevenue,
           activeRegions: randomRegions
+        },
+        chartData: {
+          line: newLineData,
+          bar: newBarData,
+          pie: newPieData
         },
         updatedAt: Date.now()
       },

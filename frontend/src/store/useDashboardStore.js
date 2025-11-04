@@ -59,12 +59,23 @@ export const useDashboardStore = create((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-  // Call backend refresh endpoint
-  const { data } = await api.post("/dashboard/refresh");
+        // Call backend refresh endpoint
+        const { data } = await api.post("/api/dashboard/refresh");
         
-        if (data?.statsData) {
+        if (data?.statsData && data?.chartData) {
+          // Transform backend chart data to match your format
+          const transformedChartData = {
+            line: data.chartData.line?.map(item => ({
+              date: item.month || item.date,
+              value: item.visitors || item.value
+            })) || get().chartData.line,
+            bar: data.chartData.bar || get().chartData.bar,
+            pie: data.chartData.pie || get().chartData.pie,
+          };
+
           set({ 
             statsData: data.statsData,
+            chartData: transformedChartData,
             isLoading: false 
           });
         } else {
@@ -114,8 +125,24 @@ export const useDashboardStore = create((set, get) => {
           activeRegions: random(10, 30),
         };
 
+        const newLine = get().chartData.line.map((d) => ({
+          ...d,
+          value: random(100, 700),
+        }));
+
+        const newBar = get().chartData.bar.map((d) => ({
+          ...d,
+          revenue: random(3000, 9000),
+        }));
+
+        const newPie = get().chartData.pie.map((d) => ({
+          ...d,
+          value: random(150, 500),
+        }));
+
         set({ 
           statsData: newStats,
+          chartData: { line: newLine, bar: newBar, pie: newPie },
           isLoading: false,
           error: err.message 
         });
@@ -146,7 +173,7 @@ export const useDashboardStore = create((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-  const { data } = await api.get("/dashboard");
+        const { data } = await api.get("/api/dashboard");
         
         if (data?.statsData || data?.chartData) {
           // Transform backend data to match your format if needed
@@ -182,7 +209,7 @@ export const useDashboardStore = create((set, get) => {
       try {
         set({ isLoading: true, error: null });
         
-  const { data } = await api.get("/analytics");
+        const { data } = await api.get("/api/analytics");
 
         if (data?.analytics?.monthlyStats) {
           // Transform analytics data to your line chart format
